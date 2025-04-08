@@ -5,34 +5,43 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody _rb;
-    private const int _turnSpeed = 360;
+    #region Movement
+    private readonly int _turnSpeed = 360;
     private Vector3 _input;
-    private bool _chip;
+    private bool _isOvercharged = false;
     [SerializeField] LayerMask _floorRay;
+    #endregion
 
     #region Sprint
     private bool _isSprinting = false;
     private float _speed, _currentSprintCD, _counter;
-    private const int _maxCounter = 6;
-    private const int _sprintCD = 5;
-    private const int _normalSpeed = 5;
-    [Range(10f, 30f)]
-    [SerializeField] private float _maxSpeed;
+    private readonly int _maxCounter = 6;
+    private readonly int _sprintDuration = 5;
+    private readonly int _normalSpeed = 5;
+    private readonly int _maxSpeed = 15;
     #endregion
 
     #region Blink
-    private const int _blinkCD = 2;
+    private readonly int _blinkCD = 2;
     private int _blinkDistance = 7;
-    private float _currentBlinkCD = _blinkCD;
+    private float _currentBlinkCD = 2;
     private bool _canBlink = true;
+    private float _blinkTime = 0.25f;
     #endregion
+
+    //Overchaged with chip: Player is going at max speed. Or, counter == maxCounter.
+    //Overcharged with penny: Player has changed while in dash.
+
+    private Rigidbody _rb;
+    private bool _chip;
+    private PlayerAttack _playerAttackScript;
 
     private void Start()
     {
         _chip = true;
         CharacterSwap();
         _rb = GetComponent<Rigidbody>();
+        _playerAttackScript = GetComponent<PlayerAttack>();
         _speed = _currentSprintCD = 5;
     }
 
@@ -40,12 +49,7 @@ public class PlayerController : MonoBehaviour
     {
         GatherInput();
         Look();
-        if (_isSprinting) DashTimer();
-        if (Input.GetKeyDown(KeyCode.Q)) //Key to swap characters. Implement swap CD (or condition) later.
-        {
-            _chip = !_chip;
-            CharacterSwap();
-        }
+        if (_isSprinting) SprintTimer();
     }
 
     private void FixedUpdate()
@@ -65,8 +69,14 @@ public class PlayerController : MonoBehaviour
             else if (!_chip && _canBlink)
             {
                 _canBlink = false;
-                Blink(); //0 to 7. 7 to 21. 21 to 49. 49 to 105.
+                StartCoroutine(Blink());
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q)) //Key to swap characters. Implement swap CD (or condition) later.
+        {
+            _chip = !_chip;
+            CharacterSwap();
         }
 
         if (!_canBlink)
@@ -109,7 +119,7 @@ public class PlayerController : MonoBehaviour
 
     private void Move() => _rb.MovePosition(transform.position + (transform.forward * _input.magnitude) * _speed * Time.deltaTime);
 
-    private void DashTimer()
+    private void SprintTimer()
     {
         _currentSprintCD -= Time.deltaTime;
 
@@ -117,6 +127,7 @@ public class PlayerController : MonoBehaviour
         {
             _speed = _normalSpeed;
             _isSprinting = false;
+            _isOvercharged = false;
             _counter = 0;
         }
         else
@@ -127,9 +138,9 @@ public class PlayerController : MonoBehaviour
 
     private void VelAmplifier()
     {
-        _currentSprintCD = _sprintCD;
-        if (_counter == _maxCounter) return;
-        _counter++;
+        _currentSprintCD = _sprintDuration;
+        if (_counter < _maxCounter) _counter++;
+        _isOvercharged = (_counter == _maxCounter);
     }
 
     private void BlinkTimer()
@@ -143,18 +154,42 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Blink()
+    private IEnumerator Blink() //Penny's blink ability
     {
+        GetComponent<BoxCollider>().enabled = false; //Deactivate player's collider.
+        var selectedChild = transform.GetChild(1).gameObject; //Store penny gj into selectedChild.
+        selectedChild.SetActive(false); //Deactivate penny gj.
+        _isOvercharged = true; //Set overcharged to true.
+        yield return Helpers.GetWait(_blinkTime); //Wait blink time before anything else
+        _isOvercharged = false; //Set overcharged to false.
         transform.Translate(_blinkDistance * Vector3.forward);
+        GetComponent<BoxCollider>().enabled = true;
+        selectedChild.SetActive(!_chip);
+        transform.GetChild(0).gameObject.SetActive(_chip);
+        if (_chip) _playerAttackScript.Attack(5); //Should be on CharacterSwap(). Figure out a way to execute after blink is finished. (Blinked is IEnumerator).
     }
 
     private void CharacterSwap()
     {
         transform.GetChild(0).gameObject.SetActive(_chip); //First child is chip. Enable when player has swapped to chip.
-        transform.GetChild(1).gameObject.SetActive(!_chip); //Second child is chipn't. Enable then player has swapped to chipn't.
+        transform.GetChild(1).gameObject.SetActive(!_chip); //Second child is chipn't. Enable then player has swapped to penny.
         _currentSprintCD = 0;
         _speed = _normalSpeed; //Make maybe slow down instead of sudden in future.
+        if (_isOvercharged)
+        {
+            if (_chip)
+            {
+                transform.GetChild(0).gameObject.SetActive(false);
+                //_playerAttackScript.Attack(5); Should be here. Figure out a way to execute after blink is finished. (Blinked is IEnumerator).
+            }
+            else
+            {
+                _playerAttackScript.SpecialAttack();
+            }
+        } 
     }
 
     public bool IsUsingChip() => _chip;
+
+    //public bool IsOverCharged() => _isOvercharged;
 }

@@ -5,12 +5,13 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rb;
-    [SerializeField] private float _speed;
+    [SerializeField] private float _speed; //Remove serialized
     private readonly int _lifeSpan = 3;
     private float _lifeTime = 0;
 
-    public void Init(Vector3 dir)
+    public void Init(Vector3 dir, bool isOverchaged)
     {
+        if (isOverchaged) transform.localScale *= 3;
         _rb.velocity = dir * _speed;
         transform.rotation = Quaternion.Euler(30, 45, 0);
     }
