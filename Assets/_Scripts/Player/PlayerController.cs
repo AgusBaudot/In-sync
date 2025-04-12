@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private readonly int _turnSpeed = 360;
     private Vector3 _input;
     private bool _isOvercharged = false;
+    private bool _canMove = true;
     [SerializeField] LayerMask _floorRay;
     #endregion
 
@@ -38,158 +39,164 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        _chip = true;
-        CharacterSwap();
-        _rb = GetComponent<Rigidbody>();
-        _playerAttackScript = GetComponent<PlayerAttack>();
-        _speed = _currentSprintCD = 5;
+        _chip = true; //By default start with chip.
+        CharacterSwap(); //Call character swap to only use Chip in scene.
+        _rb = GetComponent<Rigidbody>(); //Get RigidBody component.
+        _playerAttackScript = GetComponent<PlayerAttack>(); //Get PlayerAttack component.
+        _speed = _currentSprintCD = 5; //Set speed and currentspeed to 5.
     }
 
     private void Update()
     {
-        GatherInput();
-        Look();
-        if (_isSprinting) SprintTimer();
+        GatherInput(); //First we detect user inputs.
+        Look(); //Then we look towards input.
+        if (_isSprinting) SprintTimer(); //If player is sprinting, call sptint timer.
     }
 
     private void FixedUpdate()
     {
-        Move();
+        if (_canMove) Move(); //Handle physics.
     }
 
     private void GatherInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) //If player presses space and is using chip then amplify its velocity.
+        if (Input.GetKeyDown(KeyCode.Space)) //If player presses space:
         {
-            if (_chip)
+            if (_chip) //If player is using chip:
             {
-                _isSprinting = true;
-                VelAmplifier();
+                VelAmplifier(); //Call vel amplifier.
             }
-            else if (!_chip && _canBlink)
+            else if (!_chip && _canBlink) //If player is using Penny and can blink:
             {
-                _canBlink = false;
-                StartCoroutine(Blink());
+                _canBlink = false; //He can't blink anymore.
+                StartCoroutine(Blink()); //Start blink Coroutine.
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Q)) //Key to swap characters. Implement swap CD (or condition) later.
+        if (Input.GetKeyDown(KeyCode.LeftShift)) //If player pressed Q:
         {
-            _chip = !_chip;
-            CharacterSwap();
+            _chip = !_chip; //Change chip value.
+            CharacterSwap(); //Call character swap.
         }
 
-        if (!_canBlink)
+        if (!_canBlink) //If player can't blink:
         {
-            BlinkTimer();
+            BlinkTimer(); //Call blink timer.
         }
 
-        if (!_isSprinting)
+        if (!_isSprinting) //If player isn't sprinting:
         {
-            _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+            _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")); //Use WASD as movement.
         }
 
-        else
+        else //If he is:
         {
             RaycastHit hit;
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _floorRay))
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Store mouse position as Ray.
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _floorRay)) //Determine where player is pointing mouse to:
             {
-                if (Vector3.Distance(hit.point, transform.position) <= 1.1f)
+                if (Vector3.Distance(hit.point, transform.position) <= 1.1f) //If distance between player and mouse is too little:
                 {
-                    _input = Vector3.zero;
+                    _input = Vector3.zero; //Don't move.
                     return;
                 }
-                _input = hit.point - transform.position;
+                _input = hit.point - transform.position; //Set input to distance between mouse position and player's
             }
         }
-        _input = _input.normalized;
+        _input = _input.normalized; //Normalize input's magnitude.
     }
 
     private void Look()
     {
-        if (_input != Vector3.zero)
+        if (_input != Vector3.zero) //If player is trying to move:
         {   //If player is sprinting, use input from mouse position. If not, use input with isometric position.
             Vector3 relative = _isSprinting ? (transform.position + _input) - transform.position : (transform.position + _input.ToIso()) - transform.position; //Stores relative angle.
             Quaternion rot = Quaternion.LookRotation(relative, transform.up); //Rotate towards relative in y axis.
 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _turnSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _turnSpeed * Time.deltaTime); //Rotate towards input.
         }
     }
 
-    private void Move() => _rb.MovePosition(transform.position + (transform.forward * _input.magnitude) * _speed * Time.deltaTime);
+    private void Move() => _rb.MovePosition(transform.position + (transform.forward * _input.magnitude) * _speed * Time.deltaTime); //Move player.
 
     private void SprintTimer()
     {
-        _currentSprintCD -= Time.deltaTime;
+        _currentSprintCD -= Time.deltaTime; //Tick down sprint timer.
 
-        if (_currentSprintCD <= 0)
+        if (_currentSprintCD <= 0) //If sprint has no time left:
         {
-            _speed = _normalSpeed;
-            _isSprinting = false;
-            _isOvercharged = false;
-            _counter = 0;
+            _speed = _normalSpeed; //Set speed to normal.
+            _isSprinting = false; //Set sprinting to false.
+            _isOvercharged = false; //Set overcharged to false.
+            _counter = 0; //Set counter to 0.
         }
-        else
+        else //If player still keeps sprinting:
         {
-            _speed = _normalSpeed + _counter/_maxCounter * (_maxSpeed - _normalSpeed);
+            _speed = _normalSpeed + _counter/_maxCounter * (_maxSpeed - _normalSpeed); //Aument speed depending on how many times the player has pressed space.
         }
     }
 
     private void VelAmplifier()
     {
-        _currentSprintCD = _sprintDuration;
-        if (_counter < _maxCounter) _counter++;
-        _isOvercharged = (_counter == _maxCounter);
+        _isSprinting = true; //Set sprinting to true.
+        _currentSprintCD = _sprintDuration; //Reset sprinting timer.
+        if (_counter < _maxCounter) _counter++; //Add to counter if it is less than max.
+        _isOvercharged = (_counter == _maxCounter); //Set overcharged to true if player has reached the max amount of space presses. Set to false otherwise.
     }
 
     private void BlinkTimer()
     {
-        _currentBlinkCD -= Time.deltaTime;
+        _currentBlinkCD -= Time.deltaTime; //Tick down timer.
 
-        if (_currentBlinkCD <= 0)
+        if (_currentBlinkCD <= 0) //If timer reaches 0:
         {
-            _canBlink = true;
-            _currentBlinkCD = _blinkCD;
+            _canBlink = true; //Player can blink.
+            _currentBlinkCD = _blinkCD; //Reset blink timer.
         }
     }
 
     private IEnumerator Blink() //Penny's blink ability
     {
         GetComponent<BoxCollider>().enabled = false; //Deactivate player's collider.
-        var selectedChild = transform.GetChild(1).gameObject; //Store penny gj into selectedChild.
-        selectedChild.SetActive(false); //Deactivate penny gj.
+        var selectedChild = transform.GetChild(1).gameObject; //Store penny's GO into selectedChild.
+        selectedChild.SetActive(false); //Deactivate penny's GO.
         _isOvercharged = true; //Set overcharged to true.
-        yield return Helpers.GetWait(_blinkTime); //Wait blink time before anything else
+        yield return Helpers.GetWait(_blinkTime); //Wait blink time before doing anything more.
         _isOvercharged = false; //Set overcharged to false.
-        transform.Translate(_blinkDistance * Vector3.forward);
-        GetComponent<BoxCollider>().enabled = true;
-        selectedChild.SetActive(!_chip);
-        transform.GetChild(0).gameObject.SetActive(_chip);
-        if (_chip) _playerAttackScript.Attack(5); //Should be on CharacterSwap(). Figure out a way to execute after blink is finished. (Blinked is IEnumerator).
+        transform.Translate(_blinkDistance * Vector3.forward); //Move GO the blink distance.
+        GetComponent<BoxCollider>().enabled = true; //Enable collider.
+        selectedChild.SetActive(!_chip); //Set penny's GO if player is using it.
+        transform.GetChild(0).gameObject.SetActive(_chip); //Set chip's GO if player is using it.
+        if (_chip) _playerAttackScript.Attack(5); //After teleporting, perform automatic attack of radious 5.
+        //Should be on CharacterSwap(). Figure out a way to execute after blink is finished. (Blinked is IEnumerator).
     }
 
     private void CharacterSwap()
     {
-        transform.GetChild(0).gameObject.SetActive(_chip); //First child is chip. Enable when player has swapped to chip.
-        transform.GetChild(1).gameObject.SetActive(!_chip); //Second child is chipn't. Enable then player has swapped to penny.
-        _currentSprintCD = 0;
+        transform.GetChild(0).gameObject.SetActive(_chip); //Enable chip when using it, disable it otherwise.
+        transform.GetChild(1).gameObject.SetActive(!_chip); //Enable penny when using it, disable it otherwise.
+        _currentSprintCD = 0; //Set sprint timer to 0 to stop sprinting.
         _speed = _normalSpeed; //Make maybe slow down instead of sudden in future.
-        if (_isOvercharged)
+        if (_isOvercharged) //If player was overcharged when doing swap:
         {
-            if (_chip)
+            if (_chip) //If overcharge is with chip:
             {
-                transform.GetChild(0).gameObject.SetActive(false);
+                transform.GetChild(0).gameObject.SetActive(false); //Deactivate GO so it doesn't appear mid-blink.
                 //_playerAttackScript.Attack(5); Should be here. Figure out a way to execute after blink is finished. (Blinked is IEnumerator).
             }
-            else
+            else //If overcharge is with penny:
             {
-                _playerAttackScript.SpecialAttack();
+                _playerAttackScript.SpecialAttack(); //Call her special attack.
             }
         } 
     }
 
     public bool IsUsingChip() => _chip;
+
+    public void SetCanMove(bool canMove)
+    {
+        _canMove = canMove;
+    }
 
     //public bool IsOverCharged() => _isOvercharged;
 }

@@ -10,9 +10,9 @@ public class Enemy : MonoBehaviour, IAttackable
 
     public void OnAttacked(int damageReceived)
     {
-        _anim.SetTrigger((Random.value < 0.5f) ? "Right" : "Left");
-        var dmgText = Instantiate(_dmgTextPrefab, transform.parent.GetChild(1));
-        dmgText.GetComponent<DamageUI>().ShowDamage(damageReceived);
+        _anim.SetTrigger((Random.value < 0.5f) ? "Right" : "Left"); //Set trigger flag on right or left at random.
+        var dmgText = Instantiate(_dmgTextPrefab, transform.parent.GetChild(1)); //Instantiate damage text.
+        dmgText.GetComponent<DamageUI>().ShowDamage(damageReceived); //Call show damage method with damage received from player.
     }
 
     public void OnDeath()
@@ -20,8 +20,8 @@ public class Enemy : MonoBehaviour, IAttackable
 
     }
 
-    private IEnumerator Respawn()
-    {
-        yield return Helpers.GetWait(1);
-    }
+    //private IEnumerator Respawn()
+    //{
+    //    yield return Helpers.GetWait(1);
+    //}
 }

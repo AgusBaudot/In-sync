@@ -467,7 +467,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 84
+  m_Constraints: 80
   m_CollisionDetection: 1
 --- !u!114 &229016698
 MonoBehaviour:
@@ -489,9 +489,6 @@ MonoBehaviour:
     m_Bits: 64
   _bulletPrefab: {fileID: 4531455699186873981, guid: 0a03a9b4ab1704d48868ff97ea40cb01,
     type: 3}
-  _overchargedAttack: 0
-  _specialAttackDuration: 0.5
-  _specialAttackTimer: 0
 --- !u!1 &309422571
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,7 +500,7 @@ GameObject:
   - component: {fileID: 309422572}
   - component: {fileID: 309422574}
   - component: {fileID: 309422573}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -518,13 +515,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309422571}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1892040833}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &309422573
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -545,7 +542,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 555aa9908febd39449ed6161dca07eec, type: 2}
+  - {fileID: 2100000, guid: 57f8dd7376df908489fd78a853461448, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -33979,7 +33976,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -35406,14 +35403,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1892040831}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 309422572}
   m_Father: {fileID: 121737725}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1894861876
 GameObject:
   m_ObjectHideFlags: 0

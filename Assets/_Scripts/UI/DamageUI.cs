@@ -5,18 +5,17 @@ using TMPro;
 
 public class DamageUI : MonoBehaviour
 {
-    private TextMeshProUGUI _dmgText;
+    private TextMeshProUGUI _dmgText; //Text that will show damage numbers.
 
     private void Update()
     {
-        if (_dmgText != null)
-            _dmgText.transform.parent.rotation = Quaternion.LookRotation(_dmgText.transform.parent.position - Helpers.Camera.transform.position);
+        if (_dmgText != null) //If damage text exists:
+            _dmgText.transform.parent.rotation = Quaternion.LookRotation(_dmgText.transform.parent.position - Helpers.Camera.transform.position); //Make it face the camera.
     }
 
-    public void ShowDamage(int dmg)
+    public void ShowDamage(int dmg) //Show damage in text
     {
-        GetComponent<TextMeshProUGUI>().text = dmg.ToString();
-        //StartCoroutine(FadeUI(_dmgText, 0, 0.75f));
+        GetComponent<TextMeshProUGUI>().text = dmg.ToString(); //Show damage.
     }
 
     private IEnumerator FadeUI(TextMeshProUGUI sr, float endValue, float duration) //Change it to a static method (inside helper maybe?)
@@ -33,7 +32,7 @@ public class DamageUI : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void DestroyGameObjectAfterAnimation()
+    public void DestroyGameObjectAfterAnimation() //Method called when animation of text is finished.
     {
         Destroy(gameObject);
     }

@@ -6,13 +6,12 @@ public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] private LayerMask _enemyLayer, _floorLayer;
     [SerializeField] private GameObject _bulletPrefab;
-    private float _radious = 3;
     private PlayerController _playerControllerScript;
 
     #region Overcharged attack
     private bool _overchargedAttack = false;
-    private float _specialAttackDuration = 0.5f;
-    public float _specialAttackTimer;
+    private float _specialAttackDuration = 0.25f;
+    private float _specialAttackTimer;
     #endregion
 
     private void Start()
@@ -55,6 +54,7 @@ public class PlayerAttack : MonoBehaviour
                 direction = hit.point - transform.position; //Set direction to a vector pointing towards point position.
                 var bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity); //Instantiate bullet prefab.
                 bullet.GetComponent<Bullet>().Init(direction.normalized, _overchargedAttack); //Set its velocity to move along vector normalized and tell if attack is overcharged.
+                OnOverchargedAttackFinish(); //After player shoots, finish overcharged state.
             }
         }
     }
@@ -62,6 +62,7 @@ public class PlayerAttack : MonoBehaviour
     public void SpecialAttack()
     {
         _overchargedAttack = true; //Set special ability to true.
+        _playerControllerScript.SetCanMove(false);
         _specialAttackTimer = _specialAttackDuration; //Set timer to full.
         Time.timeScale = 0.5f; //Halve game velocity
     }
@@ -76,18 +77,18 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    private void OnOverchargedAttackFinish() //Reset next shot and timescale to normal.
+    private void OnOverchargedAttackFinish()
     {
         //Reset every value changed.
         Time.timeScale = 1;
         _overchargedAttack = false; //Set special ability to false.
+        _playerControllerScript.SetCanMove(true);
     }
 
     //View sphere as red in scene
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = new Color(1, 0, 0, 0.25f); //Red color
-        Gizmos.DrawSphere(transform.position, _radious); //Draw sphere from child's position.
-    }
+    //private void OnDrawGizmosSelected()
+    //{
+    //    Gizmos.color = new Color(1, 0, 0, 0.25f); //Red color
+    //    Gizmos.DrawSphere(transform.position, _radious); //Draw sphere from child's position.
+    //}
 }
