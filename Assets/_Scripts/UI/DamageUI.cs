@@ -18,22 +18,26 @@ public class DamageUI : MonoBehaviour
         GetComponent<TextMeshProUGUI>().text = dmg.ToString(); //Show damage.
     }
 
-    private IEnumerator FadeUI(TextMeshProUGUI sr, float endValue, float duration) //Change it to a static method (inside helper maybe?)
-    {
-        float elapsedTime = 0;
-        float startValue = sr.color.a;
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            float newAlpha = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
-            sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, newAlpha);
-            yield return null;
-        }
-        Destroy(gameObject);
-    }
+    //private IEnumerator FadeUI(TextMeshProUGUI sr, float endValue, float duration) //Change it to a static method (inside helper maybe?)
+    //{
+    //    float elapsedTime = 0;
+    //    float startValue = sr.color.a;
+    //    while (elapsedTime < duration)
+    //    {
+    //        elapsedTime += Time.deltaTime;
+    //        float newAlpha = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
+    //        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, newAlpha);
+    //        yield return null;
+    //    }
+    //    Destroy(gameObject);
+    //}
 
     public void DestroyGameObjectAfterAnimation() //Method called when animation of text is finished.
     {
+        if (transform.parent.parent == null)
+        {
+            Destroy(transform.parent.gameObject);
+        }
         Destroy(gameObject);
     }
 }

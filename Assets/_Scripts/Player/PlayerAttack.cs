@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EZCameraShake;
 
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] private LayerMask _enemyLayer, _floorLayer;
-    [SerializeField] private GameObject _bulletPrefab;
-    private PlayerController _playerControllerScript;
+    [SerializeField] private GameObject[] _bulletPool, _overchargedBulletPool;
 
     #region Overcharged attack
     private bool _overchargedAttack = false;
@@ -14,17 +14,61 @@ public class PlayerAttack : MonoBehaviour
     private float _specialAttackTimer;
     #endregion
 
+    #region Components
+    private PlayerController _playerControllerScript;
+    private Animator _chipAnim, _pennyAnim;
+    #endregion
+
+    #region AttackCD
+    private bool _canAttackChip, _canAttackPenny;
+    private float _currentPennyCD, _currentChipCD;
+    float _pennyAttackCD = 0.35f;
+    float _chipAttackCD = 0.5f;
+    #endregion
+
     private void Start()
     {
+        _canAttackChip = _canAttackPenny = true;
         _playerControllerScript = GetComponent<PlayerController>(); //Assign PlayerController component.
+        _chipAnim = transform.GetChild(0).GetComponent<Animator>();
+        _pennyAnim = transform.GetChild(1).GetComponent<Animator>();
+        foreach (GameObject bullet in _bulletPool)
+        {
+            bullet.SetActive(false);
+        }
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0)) //If player presses LMB:
         {
-            Attack(); //Call attack.
+            if ((_playerControllerScript.IsUsingChip() && _canAttackChip) || (!_playerControllerScript.IsUsingChip() && _canAttackPenny))
+                Attack(); //Call attack.
         }
+
+        else if (!_canAttackChip)
+        {
+            _currentChipCD -= Time.deltaTime;
+            if (_currentChipCD <= 0)
+            {
+                _canAttackChip = true;
+            }
+        }
+
+        else if (!_canAttackPenny)
+        {
+            _currentPennyCD -= Time.deltaTime;
+            if (_currentPennyCD <= 0)
+            {
+                _canAttackPenny = true;
+                if (Input.GetMouseButton(0))
+                {
+                    Attack();
+                    _canAttackPenny = false;
+                }
+            }
+        }
+
         if (_overchargedAttack) //If player can do an overcharged attack:
         {
             OverchargedAttackTimer(); //Tick down timer.
@@ -35,27 +79,35 @@ public class PlayerAttack : MonoBehaviour
     {
         if (_playerControllerScript.IsUsingChip()) //If player is using Chip:
         {
+            _chipAnim.SetTrigger("Attacking");
             Collider[] collisions = Physics.OverlapSphere(transform.position, radious, _enemyLayer); //Get all colliders with enemy layer in radious.
             if (collisions.Length > 0) //If any is inside Sphere:
             {
+                CinemachineShake.Instance.ShakeCamera(1.5f, 0.15f); //Camera shake.
                 foreach (var collided in collisions) //Iterate through all enemies found.
                 {
                     collided.gameObject.GetComponentInParent<IAttackable>().OnAttacked(Random.Range(11, 21)); //Make them recieve damage.
                 }
             }
+            _canAttackChip = false;
+            _currentChipCD = _chipAttackCD;
         }
         else //If player is using Penny:
         {
+            _pennyAnim.SetTrigger("Attacking");
             RaycastHit hit;
             var direction = Vector3.zero;
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition); //Set ray to where the mouse is in screen.
+            var ray = Helpers.Camera.ScreenPointToRay(Input.mousePosition); //Set ray to where the mouse is in screen.
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, _floorLayer)) //If point in screen is pointing to floor:
             {
                 direction = hit.point - transform.position; //Set direction to a vector pointing towards point position.
-                var bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity); //Instantiate bullet prefab.
-                bullet.GetComponent<Bullet>().Init(direction.normalized, _overchargedAttack); //Set its velocity to move along vector normalized and tell if attack is overcharged.
+                var bullet = NextBullet().GetComponent<Bullet>();
+                bullet.Init((transform.position + (Vector3.up * 2)), direction.normalized/*, _overchargedAttack*/); //Set its velocity to move along vector normalized and tell if attack is overcharged.
+                bullet.OnTimeEnds += DeactivateBullet;
                 OnOverchargedAttackFinish(); //After player shoots, finish overcharged state.
             }
+            _canAttackPenny = false;
+            _currentPennyCD = _pennyAttackCD;
         }
     }
 
@@ -83,6 +135,39 @@ public class PlayerAttack : MonoBehaviour
         Time.timeScale = 1;
         _overchargedAttack = false; //Set special ability to false.
         _playerControllerScript.SetCanMove(true);
+    }
+
+    private GameObject NextBullet()
+    {
+        if (!_overchargedAttack)
+        {
+            foreach(GameObject bullet in _bulletPool)
+            {
+                if (!bullet.activeSelf)
+                {
+                    bullet.SetActive(true);
+                    return bullet;
+                }
+            }
+            return null;
+        }
+        else
+        {
+            foreach (GameObject overchargedBullet in _overchargedBulletPool)
+            {
+                if (!overchargedBullet.activeSelf)
+                {
+                    overchargedBullet.SetActive(true);
+                    return overchargedBullet;
+                }
+            }
+            return null;
+        }
+    }
+
+    private void DeactivateBullet(GameObject bullet)
+    {
+        bullet.SetActive(false);
     }
 
     //View sphere as red in scene
