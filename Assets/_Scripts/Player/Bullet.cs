@@ -86,7 +86,8 @@ public class Bullet : MonoBehaviour
             CinemachineShake.Instance.ShakeCamera(0.35f, 0.15f); //Camera shake.
             attackable.OnAttacked(UnityEngine.Random.Range(1, 11)); //If it is, attack enemy.
         }
-        Default();
+        if (gameObject.layer == 3) Default(); //Only default normal bullets with any collision.
+        if (collision.gameObject.layer == 13) Default(); //Default every bullet upon hitting a wall.
     } //DON'T TOUCH UNLESS BULLETS DON'T WORK
     private void Default()
     { 
