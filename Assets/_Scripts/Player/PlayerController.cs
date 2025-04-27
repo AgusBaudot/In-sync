@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private PlayerAttack _playerAttackScript;
     #endregion
 
+    public LayerMask _walkableLayer;
 
     private void Start()
     {
@@ -213,9 +214,14 @@ public class PlayerController : MonoBehaviour
         Vector3 direction = transform.forward;
         Vector3 targetPosition = transform.position + direction * _blinkDistance;
 
-        if (Physics.Raycast(transform.position, direction, out RaycastHit hit, _blinkDistance, _wallLayer))
+
+        if (!Physics.Raycast(targetPosition + Vector3.up, Vector3.down, out RaycastHit floorHit, Mathf.Infinity, _walkableLayer))
         {
-            targetPosition = hit.point - direction * 0.5f;
+            targetPosition = transform.position;
+        }
+        else if (Physics.Raycast(transform.position, direction, out RaycastHit wallHit, _blinkDistance, _wallLayer))
+        {
+            targetPosition = wallHit.point - direction * 0.5f;
         }
 
         // STEP 3: wait until blinkTime has passed and disable overcharge ability
@@ -271,8 +277,6 @@ public class PlayerController : MonoBehaviour
     {
         _canMove = canMove;
     }
-
-    //public bool IsOverCharged() => _isOvercharged;
 
     private void ParticleInstantiation()
     {

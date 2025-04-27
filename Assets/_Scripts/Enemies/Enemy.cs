@@ -13,7 +13,6 @@ public enum EnemyState
 public class Enemy : MonoBehaviour, IAttackable
 {
     #region Serialized Fields
-
     [Header("Target")]
     [SerializeField] private Transform _player;
 
@@ -33,16 +32,14 @@ public class Enemy : MonoBehaviour, IAttackable
 
     [Header("Animation")]
     [SerializeField] private Animator _anim;
-
     #endregion
 
     #region Private Fields
-
     private EnemyState _currentState = EnemyState.Idle;
     private float _lastAttackTime;
     private int _currentPatrolIndex = 0;
     private Rigidbody _rb;
-
+    private int _hp = 100;
     #endregion
 
     #region Unity Methods
@@ -113,8 +110,15 @@ public class Enemy : MonoBehaviour, IAttackable
             _rb.velocity = Vector3.zero;
             return;
         }
-
-        MoveTowards(_player.position);
+        if (_player.gameObject != null)
+        {
+            MoveTowards(_player.position);
+        }
+        else
+        {
+            _rb.velocity = Vector3.zero;
+            _currentState = EnemyState.Idle;
+        }
     }
 
     private void HandleAttacking(float distance)
@@ -181,20 +185,20 @@ public class Enemy : MonoBehaviour, IAttackable
     #region Attack
     private void Attack()
     {
-        // TODO: Replace with real attack logic
         _anim.SetTrigger("Attack");
     }
 
     public void OnAttacked(int damageReceived)
     {
-        //Debug.Log($"Enemy recieved {damageReceived} damage.");
+        _hp -= damageReceived;
         var dmgTextCanvas = Instantiate(_dmgTextPrefab, transform.position + Vector3.up * 4, Quaternion.Euler(30, 45, 0)); //Instantiate damage text.
         dmgTextCanvas.transform.GetChild(0).GetComponent<DamageUI>().ShowDamage(damageReceived); //Call show damage method with damage received from player.
+        if (_hp <= 0) OnDeath();
     }
 
     public void OnDeath()
     {
-        Debug.Log("Enemy died");
+        Destroy(gameObject);
     }
 
     #endregion

@@ -8,8 +8,6 @@ public class EnemyDamage : MonoBehaviour
 
     public void DoDamage()
     {
-        Debug.Log("test");
-        //Do damage to player.
-        //_player.GetComponent<PlayerHealth>().SomeFunction();
+        _player.GetComponent<PlayerHealth>().RecieveDamage(5);
     }
 }

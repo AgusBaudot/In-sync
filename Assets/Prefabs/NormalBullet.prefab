@@ -129,6 +129,7 @@ MonoBehaviour:
   _floorLayer:
     serializedVersion: 2
     m_Bits: 64
+  testRotation: 0
 --- !u!65 &2248975373640106006
 BoxCollider:
   m_ObjectHideFlags: 0

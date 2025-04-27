@@ -28,7 +28,7 @@ public class Bullet : MonoBehaviour
     public float testRotation;
     #endregion
 
-    public void Init(Vector3 pos, Vector3 dir/*, bool isOverchaged*/) //Bullet constructor.
+    public void Init(Vector3 pos, Vector3 dir) //Bullet constructor.
     {
         transform.position = pos;
         _rb.velocity = dir * _speed; //Set constant speed as vector for direction.
