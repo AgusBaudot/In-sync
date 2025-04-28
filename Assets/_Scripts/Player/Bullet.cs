@@ -65,8 +65,10 @@ public class Bullet : MonoBehaviour
             //        break;
             //}//Adjust testRotationation based on which one is closest.
             #endregion
-            var rot = Mathf.Atan2(hit.point.x, hit.point.z) * Mathf.Rad2Deg; //Calculate testRotationation in z based on mouse position.
-            transform.rotation = Quaternion.Euler(0, rot + testRotation, 0); //Set testRotationation to x and y to face camera. Set z testRotationation to face mouse position.
+            //var rot = Mathf.Atan2(hit.point.x, hit.point.z) * Mathf.Rad2Deg; //Calculate testRotationation in z based on mouse position.
+            //transform.rotation = Quaternion.Euler(0, rot + testRotation, 0); //Set testRotationation to x and y to face camera. Set z testRotationation to face mouse position.
+            Vector3 direction = new Vector3(hit.point.x, 0, hit.point.z);
+            transform.rotation = Quaternion.LookRotation(hit.point, Vector3.up);
             //transform.LookAt(hit.point, Vector3.up);
             //transform.up = hit.point.
         }

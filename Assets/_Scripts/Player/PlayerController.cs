@@ -153,7 +153,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            _pennyAnim.SetBool("Walking", _input.magnitude != 0 && !_isSprinting);
+            _pennyAnim.SetBool("Walking", _input.magnitude != 0);
         }
     } 
 

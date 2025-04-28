@@ -71,6 +71,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (_overchargedAttack) //If player can do an overcharged attack:
         {
+            _pennyAnim.SetTrigger("OverchargedAttack");
             OverchargedAttackTimer(); //Tick down timer.
         }
     }
@@ -94,7 +95,8 @@ public class PlayerAttack : MonoBehaviour
         }
         else //If player is using Penny:
         {
-            _pennyAnim.SetTrigger("Attacking");
+            if (!_overchargedAttack) _pennyAnim.SetTrigger("Attacking");
+            else _pennyAnim.SetTrigger("OverchargedShot");
             RaycastHit hit;
             var direction = Vector3.zero;
             var ray = Helpers.Camera.ScreenPointToRay(Input.mousePosition); //Set ray to where the mouse is in screen.
@@ -102,7 +104,7 @@ public class PlayerAttack : MonoBehaviour
             {
                 direction = hit.point - transform.position; //Set direction to a vector pointing towards point position.
                 var bullet = NextBullet().GetComponent<Bullet>();
-                bullet.Init((transform.position + (Vector3.up * 2)), direction.normalized/*, _overchargedAttack*/); //Set its velocity to move along vector normalized and tell if attack is overcharged.
+                bullet.Init((transform.position + (Vector3.up * 2)), direction.normalized); //Set its velocity to move along vector normalized and tell if attack is overcharged.
                 bullet.OnTimeEnds += DeactivateBullet;
                 OnOverchargedAttackFinish(); //After player shoots, finish overcharged state.
             }
