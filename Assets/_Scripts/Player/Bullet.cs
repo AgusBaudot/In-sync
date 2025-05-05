@@ -24,8 +24,8 @@ public class Bullet : MonoBehaviour
         new Vector3(1, 0, 1).normalized,
         new Vector3(-1, 0, -1).normalized
     };
-    private float[] vectorDistance = new float [8];
-    public float testRotation;
+    private float[] _vectorDistance = new float [8];
+    public float _testRotation;
     #endregion
 
     public void Init(Vector3 pos, Vector3 dir) //Bullet constructor.
@@ -40,33 +40,33 @@ public class Bullet : MonoBehaviour
             //switch (CheckClosest(hit.point)) //See which each of the 8 directions is closest to the direction in which the player shooted.
             //{
             //    case Vector3 v when v.Equals(Vector3.right):
-            //        this.testRotation = 60;
+            //        this._testRotation = 60;
             //        break;
             //    case Vector3 v when v.Equals(Vector3.left):
-            //        this.testRotation = 60;
+            //        this._testRotation = 60;
             //        break;
             //    case Vector3 v when v.Equals(Vector3.back):
-            //        this.testRotation = 30;
+            //        this._testRotation = 30;
             //        break;
             //    case Vector3 v when v.Equals(Vector3.forward):
-            //        this.testRotation = 30;
+            //        this._testRotation = 30;
             //        break;
             //    case Vector3 v when v.Equals((Vector3.right + Vector3.back).normalized):
-            //        this.testRotation = 45;
+            //        this._testRotation = 45;
             //        break;
             //    case Vector3 v when v.Equals((Vector3.left + Vector3.forward).normalized):
-            //        this.testRotation = 45;
+            //        this._testRotation = 45;
             //        break;
             //    case Vector3 v when v.Equals((Vector3.right + Vector3.forward).normalized):
-            //        this.testRotation = 45;
+            //        this._testRotation = 45;
             //        break;
             //    case Vector3 v when v.Equals((Vector3.left + Vector3.back).normalized):
-            //        this.testRotation = 45;
+            //        this._testRotation = 45;
             //        break;
-            //}//Adjust testRotationation based on which one is closest.
+            //}//Adjust _testRotationation based on which one is closest.
             #endregion
-            //var rot = Mathf.Atan2(hit.point.x, hit.point.z) * Mathf.Rad2Deg; //Calculate testRotationation in z based on mouse position.
-            //transform.rotation = Quaternion.Euler(0, rot + testRotation, 0); //Set testRotationation to x and y to face camera. Set z testRotationation to face mouse position.
+            //var rot = Mathf.Atan2(hit.point.x, hit.point.z) * Mathf.Rad2Deg; //Calculate _testRotationation in z based on mouse position.
+            //transform.rotation = Quaternion.Euler(0, rot + _testRotation, 0); //Set _testRotationation to x and y to face camera. Set z _testRotationation to face mouse position.
             Vector3 direction = new Vector3(hit.point.x, 0, hit.point.z);
             transform.rotation = Quaternion.LookRotation(hit.point, Vector3.up);
             //transform.LookAt(hit.point, Vector3.up);
@@ -105,9 +105,9 @@ public class Bullet : MonoBehaviour
     //{
     //    for (int i = 0; i < _primitiveVectors.Count; i++) //Iterate through all vectors
     //    {
-    //        vectorDistance[i] = Vector3.Distance(_primitiveVectors[i], myVector); //Calculate distance between each of the 8 directions and mouse position.
+    //        _vectorDistance[i] = Vector3.Distance(_primitiveVectors[i], myVector); //Calculate distance between each of the 8 directions and mouse position.
     //    }
-    //    return _primitiveVectors[Array.IndexOf(vectorDistance, Mathf.Min(vectorDistance))];
+    //    return _primitiveVectors[Array.IndexOf(_vectorDistance, Mathf.Min(_vectorDistance))];
     //    //Return vector from vectorList whose index is the same as the minimum value of distanceArray.
     //}
 }

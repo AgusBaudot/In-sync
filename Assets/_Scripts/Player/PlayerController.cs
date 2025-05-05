@@ -44,12 +44,15 @@ public class PlayerController : MonoBehaviour
     private PlayerAttack _playerAttackScript;
     #endregion
 
-    public LayerMask _walkableLayer;
+    [SerializeField] private LayerMask _walkableLayer;
+    [SerializeField] private LayerMask _roomLayer;
+
+    public event Action OnSwap;
+    public event Action<bool> OnOvercharged;
 
     private void Start()
     {
         _chip = true; //By default start with chip.
-        CharacterSwap(); //Call character swap to only use Chip in scene.
         _playerAttackScript = GetComponent<PlayerAttack>(); //Get PlayerAttack component.
         _speed = _currentSprintCD = 5; //Set speed and currentspeed to 5.
         _rb = GetComponent<Rigidbody>(); //Get RigidBody component.
@@ -169,6 +172,7 @@ public class PlayerController : MonoBehaviour
             _isSprinting = false; //Set sprinting to false.
             _isOvercharged = false; //Set overcharged to false.
             _counter = 0; //Set counter to 0.
+            OnOvercharged?.Invoke(_isOvercharged);
         }
         else //If player still keeps sprinting:
         {
@@ -184,6 +188,7 @@ public class PlayerController : MonoBehaviour
         if (_counter < _maxCounter) _counter++; //Add to counter if it is less than max.
         _chipAnim.speed = 0.5f + 0.8f * (_counter / _maxCounter);
         _isOvercharged = (_counter == _maxCounter); //Set overcharged to true if player has reached the max amount of space presses. Set to false otherwise.
+        if (_isOvercharged) OnOvercharged?.Invoke(_isOvercharged);
     }
 
     private void BlinkTimer()
@@ -201,6 +206,7 @@ public class PlayerController : MonoBehaviour
     {
         //STEP 0: enable overcharge ability and get children
         _isOvercharged = true;
+        OnOvercharged?.Invoke(_isOvercharged);
         Transform chipModel = transform.GetChild(0);
         Transform pennyModel = transform.GetChild(1);
         GameObject activeModel = _chip ? chipModel.gameObject : pennyModel.gameObject;
@@ -217,11 +223,15 @@ public class PlayerController : MonoBehaviour
 
         if (!Physics.Raycast(targetPosition + Vector3.up, Vector3.down, out RaycastHit floorHit, Mathf.Infinity, _walkableLayer))
         {
-            targetPosition = transform.position;
+            targetPosition = transform.position; //If destined position isn't walkable, then stay in place.
         }
         else if (Physics.Raycast(transform.position, direction, out RaycastHit wallHit, _blinkDistance, _wallLayer))
         {
-            targetPosition = wallHit.point - direction * 0.5f;
+            targetPosition = wallHit.point - direction * 0.5f; //If in the middle of the blink is a wall, don't blink through it.
+        }
+        else if (Physics.Raycast(transform.position, direction, out RaycastHit roomHit, _blinkDistance, _roomLayer))
+        {
+            transform.GetChild(2).GetComponent<RoomCollider>().WallCollisionCaller(roomHit.transform.GetComponent<BoxCollider>());
         }
 
         // STEP 3: wait until blinkTime has passed and disable overcharge ability
@@ -232,6 +242,7 @@ public class PlayerController : MonoBehaviour
             yield return null; // Wait for frame
         }
         _isOvercharged = false;
+        OnOvercharged?.Invoke(_isOvercharged);
 
         // STEP 4: Teleport before next frame renders
         _rb.MovePosition(targetPosition);
@@ -251,6 +262,8 @@ public class PlayerController : MonoBehaviour
 
     private void CharacterSwap()
     {
+        ParticleInstantiation();
+        OnSwap?.Invoke();
         transform.GetChild(0).gameObject.SetActive(_chip); //Enable chip when using it, disable it otherwise.
         transform.GetChild(1).gameObject.SetActive(!_chip); //Enable penny when using it, disable it otherwise.
         _currentSprintCD = 0; //Set sprint timer to 0 to stop sprinting.
