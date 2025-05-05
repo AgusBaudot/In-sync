@@ -104,7 +104,7 @@ public class PlayerAttack : MonoBehaviour
             {
                 direction = hit.point - transform.position; //Set direction to a vector pointing towards point position.
                 var bullet = NextBullet().GetComponent<Bullet>();
-                bullet.Init((transform.position + (Vector3.up * 2)), direction.normalized); //Set its velocity to move along vector normalized and tell if attack is overcharged.
+                bullet.Init((transform.position + Vector3.up), direction.normalized); //Set its velocity to move along vector normalized and tell if attack is overcharged.
                 bullet.OnTimeEnds += DeactivateBullet;
                 OnOverchargedAttackFinish(); //After player shoots, finish overcharged state.
             }

@@ -10,67 +10,21 @@ public class Bullet : MonoBehaviour
     public event Action<GameObject> OnTimeEnds;
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private LayerMask _floorLayer;
-    private float _speed = 12;
+    private float _speed = 15;
     private readonly int _lifeSpan = 3;
     private float _lifeTime = 0;
-    private readonly List<Vector3> _primitiveVectors = new List<Vector3>
-    {
-        Vector3.right,
-        Vector3.left,
-        Vector3.forward,
-        Vector3.back,
-        new Vector3(1, 0, -1).normalized,
-        new Vector3(-1, 0, 1).normalized,
-        new Vector3(1, 0, 1).normalized,
-        new Vector3(-1, 0, -1).normalized
-    };
-    private float[] _vectorDistance = new float [8];
-    public float _testRotation;
     #endregion
 
     public void Init(Vector3 pos, Vector3 dir) //Bullet constructor.
     {
         transform.position = pos;
-        _rb.velocity = dir * _speed; //Set constant speed as vector for direction.
-        var mousePos = Helpers.Camera.ScreenPointToRay(Input.mousePosition);
+        _rb.velocity = (gameObject.layer == 3) ?  dir * _speed : dir * _speed * 1.5f; //Set constant speed as vector for direction.
+        var mousePos = Helpers.Camera.ScreenPointToRay(Input.mousePosition); //Get mouse position in world.
         RaycastHit hit;
-        if (Physics.Raycast(mousePos, out hit, Mathf.Infinity, _floorLayer))
+        if (Physics.Raycast(mousePos, out hit, Mathf.Infinity, _floorLayer)) //If mouse is aiming into the shootable screen:
         {
-            #region Delete if successful
-            //switch (CheckClosest(hit.point)) //See which each of the 8 directions is closest to the direction in which the player shooted.
-            //{
-            //    case Vector3 v when v.Equals(Vector3.right):
-            //        this._testRotation = 60;
-            //        break;
-            //    case Vector3 v when v.Equals(Vector3.left):
-            //        this._testRotation = 60;
-            //        break;
-            //    case Vector3 v when v.Equals(Vector3.back):
-            //        this._testRotation = 30;
-            //        break;
-            //    case Vector3 v when v.Equals(Vector3.forward):
-            //        this._testRotation = 30;
-            //        break;
-            //    case Vector3 v when v.Equals((Vector3.right + Vector3.back).normalized):
-            //        this._testRotation = 45;
-            //        break;
-            //    case Vector3 v when v.Equals((Vector3.left + Vector3.forward).normalized):
-            //        this._testRotation = 45;
-            //        break;
-            //    case Vector3 v when v.Equals((Vector3.right + Vector3.forward).normalized):
-            //        this._testRotation = 45;
-            //        break;
-            //    case Vector3 v when v.Equals((Vector3.left + Vector3.back).normalized):
-            //        this._testRotation = 45;
-            //        break;
-            //}//Adjust _testRotationation based on which one is closest.
-            #endregion
-            //var rot = Mathf.Atan2(hit.point.x, hit.point.z) * Mathf.Rad2Deg; //Calculate _testRotationation in z based on mouse position.
-            //transform.rotation = Quaternion.Euler(0, rot + _testRotation, 0); //Set _testRotationation to x and y to face camera. Set z _testRotationation to face mouse position.
-            Vector3 direction = new Vector3(hit.point.x, 0, hit.point.z);
-            transform.rotation = Quaternion.LookRotation(hit.point, Vector3.up);
-            //transform.LookAt(hit.point, Vector3.up);
-            //transform.up = hit.point.
+            Vector3 direciton = hit.point - transform.position; //Calulate the direction between the current bullet position and the target position.
+            transform.rotation = Quaternion.LookRotation(direciton, Vector3.up); //Apply that direction as rotation of GO.
         }
     } //DON'T TOUCH UNLESS BULLETS DON'T WORK
     private void Update()
@@ -93,21 +47,11 @@ public class Bullet : MonoBehaviour
     } //DON'T TOUCH UNLESS BULLETS DON'T WORK
     private void Default()
     { 
-        _rb.velocity = Vector3.zero;
-        transform.localPosition = Vector3.up * 2;
-        _lifeTime = 0;
-        transform.rotation = Quaternion.identity;
-        transform.localScale = (gameObject.layer == 3) ? Vector3.one * 0.2f : Vector3.one * 0.6f; //Set scale to 0.2 for normal bullets. 0.6 for overcharged ones.
-        OnTimeEnds?.Invoke(gameObject);
+        _rb.velocity = Vector3.zero; //Reset velocity to 0.
+        transform.localPosition = Vector3.up * 2; //Reset position to bullet pool.
+        _lifeTime = 0; //Reset lifetime timer.
+        transform.rotation = Quaternion.identity; //Reset rotation of GO.
+        transform.localScale = (gameObject.layer == 3) ? Vector3.one * 0.2f : Vector3.one * 0.4f; //Set scale to 0.2 for normal bullets. 0.6 for overcharged ones.
+        OnTimeEnds?.Invoke(gameObject); //Fire event after reseting bullet.
     } //DON'T TOUCH UNLESS BULLETS DON'T WORK
-
-    //private Vector3 CheckClosest(Vector3 myVector)
-    //{
-    //    for (int i = 0; i < _primitiveVectors.Count; i++) //Iterate through all vectors
-    //    {
-    //        _vectorDistance[i] = Vector3.Distance(_primitiveVectors[i], myVector); //Calculate distance between each of the 8 directions and mouse position.
-    //    }
-    //    return _primitiveVectors[Array.IndexOf(_vectorDistance, Mathf.Min(_vectorDistance))];
-    //    //Return vector from vectorList whose index is the same as the minimum value of distanceArray.
-    //}
 }
