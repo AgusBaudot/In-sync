@@ -5,7 +5,7 @@ using System;
 
 public class RoomCollider : MonoBehaviour
 {
-    public event Action<Collider> OnWallCollision;
+    public event Action OnWallCollision;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -17,6 +17,6 @@ public class RoomCollider : MonoBehaviour
 
     public void WallCollisionCaller(Collider other)
     {
-        OnWallCollision?.Invoke(other);
+        OnWallCollision?.Invoke();
     }
 }

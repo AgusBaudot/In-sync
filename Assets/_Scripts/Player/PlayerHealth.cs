@@ -8,6 +8,7 @@ public class PlayerHealth : MonoBehaviour
     private int _maxHealth = 100;
     public int _currentHp { get; private set; }
     public event Action OnAttacked;
+    [SerializeField] private Canvas _canvas;
 
     private void Start()
     {
@@ -26,6 +27,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void OnDeath()
     {
+        _canvas.transform.GetChild(1).gameObject.SetActive(true);
         Destroy(gameObject);
     }
 }

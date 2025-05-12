@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb55e0a843f0654ea77d0d420ce23a8, type: 3}
+  m_Name: Figma Downloader
+  m_EditorClassIdentifier: 
+  _personalAccessToken: figd_VrOHSe47H8WkML2J5UFsIzS7j_SWPdze2Utv7Sjl
+  _assetExtension: figma
+  _assetPath: Figma designs
+  _downloadDependencies: 1
+  _downloadImages: 1
+  _fileId: U8h4DdGWkMhYqiwBZAhrVr
+  _fileVersion: Figma importer test
+  _fileName: In-Sync
+  _defaultFileName: In Sync
+  _branch: 
+  _branches: []

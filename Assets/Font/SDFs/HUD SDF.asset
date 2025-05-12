@@ -6,7 +6,7 @@ Texture2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Hoover-Variable SDF Atlas
+  m_Name: HUD SDF Atlas
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
@@ -58,11 +58,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: Hoover-Variable SDF
+  m_Name: HUD SDF
   m_EditorClassIdentifier: 
-  hashCode: -954095661
+  hashCode: 1180775816
   material: {fileID: 2595665390482464272}
-  materialHashCode: -777793773
+  materialHashCode: -1700400088
   m_Version: 1.1.0
   m_SourceFontFileGUID: 42143fd9dbc139e47956ef75ab1eba15
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 42143fd9dbc139e47956ef75ab1eba15,
@@ -2635,7 +2635,7 @@ MonoBehaviour:
   m_FallbackFontAssetTable: []
   m_CreationSettings:
     sourceFontFileName: 
-    sourceFontFileGUID: 42143fd9dbc139e47956ef75ab1eba15
+    sourceFontFileGUID: e7f5408d0cf55594eb8eeaf9f26fcd84
     pointSizeSamplingMode: 0
     pointSize: 70
     padding: 5

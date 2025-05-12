@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 42143fd9dbc139e47956ef75ab1eba15
+guid: e1c23b21c1c1b7843b7e70d5096cc0c2
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Hoover Variable
+  - Blacknode
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

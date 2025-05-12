@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public enum EnemyState
 {
@@ -10,52 +11,55 @@ public enum EnemyState
 }
 
 [RequireComponent(typeof(Rigidbody))]
-public class Enemy : MonoBehaviour, IAttackable
+public abstract class Enemy : MonoBehaviour, IAttackable
 {
     #region Serialized Fields
     [Header("Target")]
-    [SerializeField] private Transform _player;
+    [SerializeField] private protected Transform _player;
 
     [Header("Detection")]
-    [SerializeField] private float _detectionRange = 10f;
-    [SerializeField] private float _attackRange = 2f;
+    [SerializeField] private protected float _detectionRange = 10f;
+    [SerializeField] private protected float _attackRange = 2f;
 
     [Header("Movement")]
-    [SerializeField] private float _moveSpeed = 3.5f;
+    [SerializeField] private protected float _moveSpeed = 3.5f;
 
     [Header("Attack")]
-    [SerializeField] private float _attackCooldown = 1.5f;
-    [SerializeField] private GameObject _dmgTextPrefab;
+    [SerializeField] private protected float _attackCooldown = 1.5f;
+    [SerializeField] private protected GameObject _dmgTextPrefab;
+    [SerializeField] private int _damage = 0;
 
     [Header("Patrol")]
-    [SerializeField] private Transform[] _patrolPoints;
+    [SerializeField] private protected Transform[] _patrolPoints;
 
     [Header("Animation")]
-    [SerializeField] private Animator _anim;
+    [SerializeField] private protected Animator _anim;
     #endregion
 
     #region Private Fields
-    private EnemyState _currentState = EnemyState.Idle;
-    private float _lastAttackTime;
-    private int _currentPatrolIndex = 0;
-    private Rigidbody _rb;
-    private int _hp = 100;
+    private protected EnemyState _currentState = EnemyState.Idle;
+    private protected float _lastAttackTime;
+    private protected int _currentPatrolIndex = 0;
+    private protected Rigidbody _rb;
+    private protected int _hp = 100;
     #endregion
+
+    public event Action<Enemy> OnDeathEvent;
 
     #region Unity Methods
 
     private void Start()
     {
-        _rb = GetComponent<Rigidbody>();
         _lastAttackTime = -_attackCooldown;
+        _rb = GetComponent<Rigidbody>();
+        transform.GetChild(0).GetComponentInChildren<EnemyDamage>().SetDamage(_damage);
     }
 
     private void Update()
     {
         if (_player == null) return;
 
-        float distanceToPlayer = Vector3.Distance(transform.position, _player.position);
-
+        float distanceToPlayer = Vector3.Distance(_rb.position, _player.position);
         switch (_currentState)
         {
             case EnemyState.Idle:
@@ -81,19 +85,16 @@ public class Enemy : MonoBehaviour, IAttackable
     #endregion
 
     #region State Handlers
-
-    private void HandleIdle(float distance)
+    public virtual void HandleIdle(float distance)
     {
         if (distance <= _detectionRange)
         {
             _currentState = EnemyState.Following;
             return;
         }
-
-        Patrol();
     }
 
-    private void HandleFollowing(float distance)
+    public virtual void HandleFollowing(float distance)
     {
         if (distance > _detectionRange)
         {
@@ -101,8 +102,6 @@ public class Enemy : MonoBehaviour, IAttackable
             _rb.velocity = Vector3.zero;
             return;
         }
-        //For melee enemy, if _player is detected, enemy won't stop following him until death or kill.
-
 
         if (distance <= _attackRange)
         {
@@ -112,6 +111,8 @@ public class Enemy : MonoBehaviour, IAttackable
         }
         if (_player.gameObject != null)
         {
+            //Vector3 moveDir = (_player.transform.position - transform.position);
+            //_rb.AddForce(moveDir - _rb.velocity, ForceMode.VelocityChange);
             MoveTowards(_player.position);
         }
         else
@@ -121,36 +122,22 @@ public class Enemy : MonoBehaviour, IAttackable
         }
     }
 
-    private void HandleAttacking(float distance)
+    public virtual void HandleAttacking(float distance)
     {
-        _rb.velocity = Vector3.zero;
-
-        if (distance > _attackRange)
-        {
-            _currentState = EnemyState.Following;
-            return;
-        }
-
-        if (Time.time >= _lastAttackTime + _attackCooldown)
-        {
-            Attack();
-            _lastAttackTime = Time.time;
-        }
+        _rb.velocity = Vector3.zero; //Only set velocity to 0. Rest of attack logic is independent.
     }
-
     #endregion
 
     #region Helper Methods
-
-    private void MoveTowards(Vector3 targetPosition)
+    private protected void MoveTowards(Vector3 targetPosition)
     {
-        Vector3 direction = (targetPosition - transform.position).normalized;
+        Vector3 direction = (targetPosition - _rb.position).normalized;
         Vector3 velocity = direction * _moveSpeed;
         velocity.y = _rb.velocity.y;
         _rb.velocity = velocity;
     }
 
-    private void FaceVelocityDirection()
+    private protected void FaceVelocityDirection()
     {
         Vector3 horizontalVelocity = _rb.velocity;
         horizontalVelocity.y = 0f;
@@ -158,32 +145,26 @@ public class Enemy : MonoBehaviour, IAttackable
         if (horizontalVelocity.magnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(horizontalVelocity);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+            _rb.rotation = Quaternion.Slerp(_rb.rotation, targetRotation, 10f * Time.deltaTime);
         }
     }
 
-    private void Patrol()
+    private protected IEnumerator CooldownAfterAttack(float time, float distance)
     {
-        //if (_patrolPoints.Length == 0)
-        //{
-        //    _rb.velocity = Vector3.zero;
-        //    return;
-        //}
-
-        //Transform targetPoint = _patrolPoints[_currentPatrolIndex];
-        //MoveTowards(targetPoint.position);
-
-        //float distance = Vector3.Distance(transform.position, targetPoint.position);
-        //if (distance <= _attackRange)
-        //{
-        //    Debug.Log(distance);
-        //    _currentPatrolIndex = (_currentPatrolIndex + 1) % _patrolPoints.Length;
-        //}
+        yield return Helpers.GetWait(time);
+        if (distance > _attackRange)
+        {
+            _currentState = EnemyState.Following;
+        }
+        else if (distance > _detectionRange)
+        {
+            _currentState = EnemyState.Idle;
+        }
     }
     #endregion
 
     #region Attack
-    private void Attack()
+    private protected void Attack()
     {
         _anim.SetTrigger("Attack");
     }
@@ -198,12 +179,13 @@ public class Enemy : MonoBehaviour, IAttackable
 
     public void OnDeath()
     {
+        OnDeathEvent?.Invoke(this);
         Destroy(gameObject);
     }
 
     #endregion
 
-    private void OnDrawGizmos()
+    private protected void OnDrawGizmos()
     {
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(transform.position, _detectionRange);
