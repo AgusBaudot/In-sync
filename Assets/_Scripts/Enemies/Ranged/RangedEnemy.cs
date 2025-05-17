@@ -8,11 +8,15 @@ public class RangedEnemy : Enemy
     [SerializeField, Range(0f, 1f)] private float attackFacingThreshold = 0.95f;
     [SerializeField] private float _rotationSpeed = 7.5f;
     [SerializeField] private GameObject _bulletPrefab;
+    [Header("Test")]
+    [SerializeField] private float _knockbackDuration;
 
-    private Vector3 _bulletDirection;
+    private Vector3 _playerPositionWhenAttacked;
+    private bool _isChargingAttack = false;
 
     public override void HandleAttacking(float distance)
     {
+        if (_isChargingAttack) return;
         #region Rotate towards player
         Vector3 toPlayer = (_player.position - transform.position).normalized;
         toPlayer.y = 0f;
@@ -32,31 +36,43 @@ public class RangedEnemy : Enemy
         } 
         #endregion
 
-        _rb.velocity = Vector3.zero;
+        if(!isKnockback)
+            _rb.velocity = Vector3.zero;
 
         if (Time.time >= _lastAttackTime + _attackCooldown)
         {
+            _isChargingAttack = true;
             Attack();
             _lastAttackTime = Time.time;
-            _bulletDirection = (_player.position - transform.position).normalized;
+            _playerPositionWhenAttacked = _player.position;
         }
         var attackTime = _anim.runtimeAnimatorController.animationClips.FirstOrDefault(clip => clip.name == "Armature|attackShoot")?.length ?? 0f;
         attackTime += _anim.runtimeAnimatorController.animationClips.FirstOrDefault(clip => clip.name == "Armature|attackCharge")?.length ?? 0f;
         StartCoroutine(CooldownAfterAttack(attackTime, distance));
     }
-    
+
     public void FireProjectile()
     {
         var bullet = Instantiate(_bulletPrefab);
-        bullet.GetComponent<EnemyBullet>().Init((transform.position + Vector3.up), _bulletDirection);
+        bullet.GetComponent<EnemyBullet>().Init((transform.position + Vector3.up), (_playerPositionWhenAttacked - transform.position).normalized);
+        _isChargingAttack = false;
+        MoveKnockback();
     }
 
     public void MoveKnockback()
     {
         if (_currentState != EnemyState.Attacking) return;
-        Vector3 knockbackVelocity = (_anim.deltaPosition / Time.deltaTime) * 0.25f;
-        knockbackVelocity.y = 0f;
-        _rb.AddForce(knockbackVelocity, ForceMode.VelocityChange);
+        Vector3 awayFromPlayer = (transform.position - _playerPositionWhenAttacked).normalized;
+        awayFromPlayer.y = 0;
+        _rb.AddForce(awayFromPlayer * 6f, ForceMode.VelocityChange);
+        isKnockback = true;
+        Invoke(nameof(EndKnockback), _knockbackDuration);
+    }
+
+    private void EndKnockback()
+    {
+        isKnockback = false;
+        _rb.velocity = Vector3.zero;
     }
 
     private new void OnDrawGizmos()

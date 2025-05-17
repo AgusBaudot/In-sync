@@ -18,10 +18,10 @@ public class EnemyBullet : MonoBehaviour
     public void Init(Vector3 pos, Vector3 dir) //Bullet constructor.
     {
         transform.position = pos;
-        _rb.velocity = dir * _speed;
-
-        Vector3 direciton = dir - transform.position; //Calulate the direction between the current bullet position and the target position.
-        transform.rotation = Quaternion.LookRotation(direciton, Vector3.up); //Apply that direction as rotation of GO.
+        _rb.velocity = dir.normalized * _speed;
+        transform.rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
+        //Vector3 direciton = dir - transform.position; //Calulate the direction between the current bullet position and the target position.
+        //transform.rotation = Quaternion.LookRotation(direciton, Vector3.up); //Apply that direction as rotation of GO.
     }
     private void Update()
     {

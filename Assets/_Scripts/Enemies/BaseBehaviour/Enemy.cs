@@ -44,6 +44,7 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     private protected float _lastAttackTime;
     private protected int _currentPatrolIndex = 0;
     private protected Rigidbody _rb;
+    private protected bool isKnockback = false;
     #endregion
 
     public event Action<Enemy> OnDeathEvent;
@@ -81,7 +82,8 @@ public abstract class Enemy : MonoBehaviour, IAttackable
 
     private void LateUpdate()
     {
-        FaceVelocityDirection();
+        if (!isKnockback)
+            FaceVelocityDirection();
     }
 
     #endregion
@@ -101,14 +103,16 @@ public abstract class Enemy : MonoBehaviour, IAttackable
         if (distance > _detectionRange)
         {
             _currentState = EnemyState.Idle;
-            _rb.velocity = Vector3.zero;
+            if (!isKnockback)
+                _rb.velocity = Vector3.zero;
             return;
         }
 
         if (distance <= _attackRange)
         {
             _currentState = EnemyState.Attacking;
-            _rb.velocity = Vector3.zero;
+            if (!isKnockback)
+                _rb.velocity = Vector3.zero;
             return;
         }
         if (_player.gameObject != null)
@@ -119,14 +123,16 @@ public abstract class Enemy : MonoBehaviour, IAttackable
         }
         else
         {
-            _rb.velocity = Vector3.zero;
+            if(!isKnockback)
+                _rb.velocity = Vector3.zero;
             _currentState = EnemyState.Idle;
         }
     }
 
     public virtual void HandleAttacking(float distance)
     {
-        _rb.velocity = Vector3.zero; //Only set velocity to 0. Rest of attack logic is independent.
+        if (!isKnockback)
+            _rb.velocity = Vector3.zero; //Only set velocity to 0. Rest of attack logic is independent.
     }
     #endregion
 
