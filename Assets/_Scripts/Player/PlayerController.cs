@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && _canSwap) //If player pressed shift:
+        if (Input.GetKeyDown(KeyCode.Q) && _canSwap) //If player pressed Q:
         {
             _chip = !_chip; //Change chip value.
             CharacterSwap(); //Call character swap.
@@ -140,8 +140,12 @@ public class PlayerController : MonoBehaviour
         if (_input != Vector3.zero) //If player is trying to move:
         {   //If player is sprinting, use input from mouse position. If not, use input with isometric position.
             Vector3 relative = _isSprinting ? (transform.position + _input) - transform.position : (transform.position + _input.ToIso()) - transform.position; //Stores relative angle.
-            Quaternion rot = Quaternion.LookRotation(relative, transform.up); //Rotate towards relative in y axis.
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _turnSpeed * Time.deltaTime); //Rotate towards input.
+            relative.y = 0;
+            if (relative.sqrMagnitude > 0.01f)
+            {
+                Quaternion rot = Quaternion.LookRotation(relative, transform.up); //Rotate towards relative in y axis.
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _turnSpeed * Time.deltaTime); //Rotate towards input.
+            }
         }
     }
 
@@ -227,6 +231,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (Physics.Raycast(transform.position, direction, out RaycastHit wallHit, _blinkDistance, _wallLayer))
         {
+            Debug.Log("Cannot blink through enemies");
             targetPosition = wallHit.point - direction * 0.5f; //If in the middle of the blink is a wall, don't blink through it.
         }
         else if (Physics.Raycast(transform.position, direction, out RaycastHit roomHit, _blinkDistance, _roomLayer))
@@ -285,6 +290,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public bool IsUsingChip() => _chip;
+
+    public int GetSprintCounter() => (int)_counter;
 
     public void SetCanMove(bool canMove)
     {

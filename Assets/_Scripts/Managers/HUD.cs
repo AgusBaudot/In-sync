@@ -34,7 +34,7 @@ public class HUD : MonoBehaviour
         var playerController = _player.GetComponent<PlayerController>();
         playerController.OnSwap += Swap;
         playerController.OnOvercharged += Overcharged;
-        _player.GetComponent<PlayerHealth>().OnAttacked += Attacked;
+        _player.GetComponent<PlayerHealth>().OnAttackedEvent += Attacked;
         _healthText = _canvas.transform.GetChild((int)UI.Health).GetComponent<TextMeshProUGUI>();
     }
 

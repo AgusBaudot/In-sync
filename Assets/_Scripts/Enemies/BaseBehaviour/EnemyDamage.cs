@@ -9,7 +9,7 @@ public class EnemyDamage : MonoBehaviour
     public void DoDamage()
     {
         if (_damage == 0) Debug.Log("Damage is 0!");
-        _player.GetComponent<PlayerHealth>().RecieveDamage(_damage);
+        _player.GetComponent<IAttackable>().OnAttacked(_damage);
     }
 
     public void SetDamage(int dmg)

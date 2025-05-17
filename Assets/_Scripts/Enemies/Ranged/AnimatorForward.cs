@@ -6,6 +6,7 @@ public class AnimatorForward : MonoBehaviour
 {
     private void OnAnimatorMove()
     {
+        //Transform enemy = transform.parent.parent;
         transform.parent.parent.GetComponent<RangedEnemy>().MoveKnockback();
     }
 }

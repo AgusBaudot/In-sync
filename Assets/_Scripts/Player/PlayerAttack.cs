@@ -85,9 +85,21 @@ public class PlayerAttack : MonoBehaviour
             if (collisions.Length > 0) //If any is inside Sphere:
             {
                 CinemachineShake.Instance.ShakeCamera(1.5f, 0.15f); //Camera shake.
-                foreach (var collided in collisions) //Iterate through all enemies found.
+                if (radious == 3)
                 {
-                    collided.gameObject.GetComponentInParent<IAttackable>().OnAttacked(Random.Range(11, 21)); //Make them recieve damage.
+                    var dmg = 5f + 10f * (_playerControllerScript.GetSprintCounter() / 6f);
+                    foreach (var collided in collisions) //Iterate through all enemies found.
+                    {
+                        collided.gameObject.GetComponentInParent<IAttackable>().OnAttacked((int)dmg); //Make them recieve damage.
+                    }
+                }
+                else if (radious == 5)
+                {
+                    foreach (var collided in collisions)
+                    {
+                        collided.gameObject.GetComponentInParent<IAttackable>().OnAttacked(15); //Receive special damage.
+                        //Stun them.
+                    }
                 }
             }
             _canAttackChip = false;
@@ -103,7 +115,7 @@ public class PlayerAttack : MonoBehaviour
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, _floorLayer)) //If point in screen is pointing to floor:
             {
                 direction = hit.point - transform.position; //Set direction to a vector pointing towards point position.
-                var bullet = NextBullet().GetComponent<Bullet>();
+                var bullet = NextBullet().GetComponent<PlayerBullet>();
                 bullet.Init((transform.position + Vector3.up), direction.normalized); //Set its velocity to move along vector normalized and tell if attack is overcharged.
                 bullet.OnTimeEnds += DeactivateBullet;
                 OnOverchargedAttackFinish(); //After player shoots, finish overcharged state.

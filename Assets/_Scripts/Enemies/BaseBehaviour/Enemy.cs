@@ -24,16 +24,19 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     [Header("Movement")]
     [SerializeField] private protected float _moveSpeed = 3.5f;
 
-    [Header("Attack")]
-    [SerializeField] private protected float _attackCooldown = 1.5f;
-    [SerializeField] private protected GameObject _dmgTextPrefab;
-    [SerializeField] private int _damage = 0;
-
     [Header("Patrol")]
     [SerializeField] private protected Transform[] _patrolPoints;
 
     [Header("Animation")]
     [SerializeField] private protected Animator _anim;
+
+    [Header("Life")]
+    [SerializeField] private protected int _hp = 100;
+
+    [Header("Attack")]
+    [SerializeField] private protected float _attackCooldown = 1.5f;
+    [SerializeField] private protected GameObject _dmgTextPrefab;
+    [SerializeField] private int _damage = 0;
     #endregion
 
     #region Private Fields
@@ -41,7 +44,6 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     private protected float _lastAttackTime;
     private protected int _currentPatrolIndex = 0;
     private protected Rigidbody _rb;
-    private protected int _hp = 100;
     #endregion
 
     public event Action<Enemy> OnDeathEvent;
@@ -135,6 +137,9 @@ public abstract class Enemy : MonoBehaviour, IAttackable
         Vector3 velocity = direction * _moveSpeed;
         velocity.y = _rb.velocity.y;
         _rb.velocity = velocity;
+        //Vector3 desiredVelocity = direction * _moveSpeed;
+        //Vector3 velocityChange = desiredVelocity - _rb.velocity;
+        //_rb.AddForce(velocityChange, ForceMode.VelocityChange);
     }
 
     private protected void FaceVelocityDirection()
@@ -161,6 +166,8 @@ public abstract class Enemy : MonoBehaviour, IAttackable
             _currentState = EnemyState.Idle;
         }
     }
+
+    public EnemyState GetEnemyState() => _currentState;
     #endregion
 
     #region Attack
