@@ -15,6 +15,7 @@ public class Room : MonoBehaviour
     private bool _hasEntered = false;
 
     public Action OnRoomCleared;
+    public Action<Room> OnRoomEnter;
 
     private void Start()
     {
@@ -70,7 +71,7 @@ public class Room : MonoBehaviour
         if (!_roomDetector.Contains(other)) return;
         if (_hasEntered) return;
         _hasEntered = true;
-        Debug.Log("Player entered a room");
+        OnRoomEnter?.Invoke(this);
         foreach (Collider trigger in _roomDetector)
         {
             trigger.gameObject.SetActive(false);

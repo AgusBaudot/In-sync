@@ -20,6 +20,7 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     [Header("Detection")]
     [SerializeField] private protected float _detectionRange = 10f;
     [SerializeField] private protected float _attackRange = 2f;
+    [SerializeField] private RoomManager _roomManager;
 
     [Header("Movement")]
     [SerializeField] private protected float _moveSpeed = 3.5f;
@@ -91,8 +92,9 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     #region State Handlers
     public virtual void HandleIdle(float distance)
     {
-        if (distance <= _detectionRange)
+        if (distance <= _detectionRange && _roomManager.GetActiveRoom() != -1)
         {
+
             _currentState = EnemyState.Following;
             return;
         }

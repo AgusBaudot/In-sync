@@ -14,8 +14,6 @@ public class MeleeEnemy : Enemy
         }
         if (_player.gameObject != null)
         {
-            //Vector3 moveDir = (_player.transform.position - transform.position);
-            //_rb.AddForce(moveDir - _rb.velocity, ForceMode.VelocityChange);
             MoveTowards(_player.position);
         }
         else
@@ -38,4 +36,6 @@ public class MeleeEnemy : Enemy
         var attackTime = _anim.runtimeAnimatorController.animationClips.FirstOrDefault(clip => clip.name == "Cylinder_attack")?.length ?? 0f;
         StartCoroutine(CooldownAfterAttack(attackTime, distance));
     }
+
+    public float GetAttackRange() => _attackRange;
 }

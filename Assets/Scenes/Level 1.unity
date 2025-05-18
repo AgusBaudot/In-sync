@@ -11381,6 +11381,21 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _attackRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _detectionRange
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -51573,6 +51588,21 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _attackRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _detectionRange
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -70452,6 +70482,11 @@ PrefabInstance:
       objectReference: {fileID: 907045977}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
       propertyPath: _detectionRange
       value: 25
       objectReference: {fileID: 0}
@@ -75933,7 +75968,7 @@ PrefabInstance:
     - target: {fileID: 3922873125511901177, guid: 7849d746632245b41a0d44ca5248d936,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -192.18
+      value: -199.02
       objectReference: {fileID: 0}
     - target: {fileID: 3922873125511901177, guid: 7849d746632245b41a0d44ca5248d936,
         type: 3}
@@ -75975,6 +76010,21 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _attackRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _detectionRange
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -85938,7 +85988,7 @@ PrefabInstance:
     - target: {fileID: 3922873125511901177, guid: 7849d746632245b41a0d44ca5248d936,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -182.53
+      value: -173.3
       objectReference: {fileID: 0}
     - target: {fileID: 3922873125511901177, guid: 7849d746632245b41a0d44ca5248d936,
         type: 3}
@@ -85980,6 +86030,21 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _attackRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _detectionRange
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -108841,6 +108906,11 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: _detectionRange
@@ -211972,6 +212042,11 @@ PrefabInstance:
       objectReference: {fileID: 907045977}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
       propertyPath: _detectionRange
       value: 25
       objectReference: {fileID: 0}
@@ -212071,6 +212146,11 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: _detectionRange
@@ -248546,6 +248626,11 @@ PrefabInstance:
       objectReference: {fileID: 907045977}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
       propertyPath: _detectionRange
       value: 25
       objectReference: {fileID: 0}
@@ -255893,6 +255978,11 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: _detectionRange
@@ -269947,6 +270037,11 @@ PrefabInstance:
       objectReference: {fileID: 907045977}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
       propertyPath: _detectionRange
       value: 25
       objectReference: {fileID: 0}
@@ -272422,6 +272517,11 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: _detectionRange
@@ -288113,6 +288213,11 @@ PrefabInstance:
       objectReference: {fileID: 907045977}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
       propertyPath: _detectionRange
       value: 25
       objectReference: {fileID: 0}
@@ -288124,7 +288229,7 @@ PrefabInstance:
     - target: {fileID: 4680771082472550399, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 90.48
+      value: 95.18
       objectReference: {fileID: 0}
     - target: {fileID: 4680771082472550399, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
@@ -310574,6 +310679,11 @@ PrefabInstance:
       objectReference: {fileID: 907045977}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
       propertyPath: _detectionRange
       value: 25
       objectReference: {fileID: 0}
@@ -327201,6 +327311,11 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: _detectionRange
@@ -348539,6 +348654,11 @@ PrefabInstance:
       objectReference: {fileID: 907045977}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
       propertyPath: _detectionRange
       value: 25
       objectReference: {fileID: 0}
@@ -361036,6 +361156,21 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _attackRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _detectionRange
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -425506,6 +425641,11 @@ PrefabInstance:
       objectReference: {fileID: 907045977}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
       propertyPath: _detectionRange
       value: 25
       objectReference: {fileID: 0}
@@ -460679,6 +460819,11 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: _detectionRange
@@ -526757,6 +526902,21 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _attackRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _detectionRange
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -545365,6 +545525,21 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _attackRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
+    - target: {fileID: 7875469112507991678, guid: 7849d746632245b41a0d44ca5248d936,
+        type: 3}
+      propertyPath: _detectionRange
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -546043,6 +546218,11 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: _detectionRange
@@ -548868,6 +549048,11 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 907045977}
+    - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
+        type: 3}
+      propertyPath: _roomManager
+      value: 
+      objectReference: {fileID: 1896001216}
     - target: {fileID: 513731869234521855, guid: 3795887da1d50c1439814a5af59c3e59,
         type: 3}
       propertyPath: _detectionRange
