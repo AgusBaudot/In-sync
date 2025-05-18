@@ -8,7 +8,7 @@ public class RangedEnemy : Enemy
     [SerializeField, Range(0f, 1f)] private float attackFacingThreshold = 0.95f;
     [SerializeField] private float _rotationSpeed = 7.5f;
     [SerializeField] private GameObject _bulletPrefab;
-    [Header("Test")]
+    [Header("Knockback")]
     [SerializeField] private float _knockbackDuration;
 
     private Vector3 _playerPositionWhenAttacked;

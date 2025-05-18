@@ -12,6 +12,10 @@ public class Room : MonoBehaviour
     [SerializeField] private List<Collider> _roomDetector; //Trigger walls for deteting if the player steps inside a room.
     [SerializeField] private RoomCollider _colliderScript;
 
+    private bool _hasEntered = false;
+
+    public Action OnRoomCleared;
+
     private void Start()
     {
         foreach (Enemy enemy in _enemies)
@@ -21,11 +25,11 @@ public class Room : MonoBehaviour
                 enemy.OnDeathEvent += CheckRoomClear;
             }
         }
+        foreach (Collider door in _doors)
+        {
+            door.gameObject.SetActive(false);
+        }
         _colliderScript.OnWallCollision += DisableTriggers;
-        //foreach (Collider door in _doors)
-        //{
-        //    door.gameObject.SetActive(false);
-        //}
     }
 
     private void CheckRoomClear(Enemy enemy)
@@ -35,6 +39,7 @@ public class Room : MonoBehaviour
         if (_enemies.Count == 0)
         {
             Debug.Log("Room Cleared!");
+            OnRoomCleared?.Invoke();
             OpenDoors();
             return;
         }
@@ -46,26 +51,44 @@ public class Room : MonoBehaviour
         for (int i = 0; i < _doors.Count; i++)
         {
             _doors[i].gameObject.SetActive(false);
-            _roomDetector[i].gameObject.SetActive(true);
         }
+        gameObject.SetActive(false);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Player entered a room");
-            DisableTriggers();
-            //Call method and destroy all triggers of this room to avoid "re-entering".
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.CompareTag("Player"))
+    //    {
+    //        Debug.Log("Entered in same script.");
+    //        DisableTriggers();
+    //        //Call method and destroy all triggers of this room to avoid "re-entering".
+    //    }
+    //}
 
-    private void DisableTriggers()
+    private void DisableTriggers(Collider other)
     {
+        if (!_roomDetector.Contains(other)) return;
+        if (_hasEntered) return;
+        _hasEntered = true;
         Debug.Log("Player entered a room");
         foreach (Collider trigger in _roomDetector)
         {
             trigger.gameObject.SetActive(false);
+            //Destroy(trigger.gameObject)?
         }
+        foreach (Collider door in _doors)
+        {
+            door.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        _colliderScript.OnWallCollision -= DisableTriggers;
+    }
+
+    private void OnDisable()
+    {
+        _colliderScript.OnWallCollision -= DisableTriggers;
     }
 }

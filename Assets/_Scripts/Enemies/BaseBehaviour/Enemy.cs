@@ -192,8 +192,12 @@ public abstract class Enemy : MonoBehaviour, IAttackable
 
     public void OnDeath()
     {
-        OnDeathEvent?.Invoke(this);
         Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        OnDeathEvent?.Invoke(this);
     }
 
     #endregion
