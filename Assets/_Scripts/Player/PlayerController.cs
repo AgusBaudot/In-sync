@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SearchService;
 
 public class PlayerController : MonoBehaviour
 {
@@ -24,7 +25,11 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Blink
-    private readonly int _blinkCD = 2;
+    [Header("Blink")]
+    [SerializeField]
+    private float _blinkCD;
+    [Range(1f, 10f)]
+    [SerializeField]
     private int _blinkDistance = 7;
     private float _currentBlinkCD = 2;
     private bool _canBlink = true;
