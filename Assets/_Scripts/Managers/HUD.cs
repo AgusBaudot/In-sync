@@ -8,6 +8,7 @@ public class HUD : MonoBehaviour
 {
     //private bool _chip, _overcharged;
     private int _chip;
+    private int _cursorIndex = 0;
     private bool _overcharged;
     private TextMeshProUGUI _healthText;
     [SerializeField] private GameObject _player;
@@ -19,6 +20,9 @@ public class HUD : MonoBehaviour
     [SerializeField] private Sprite[] _healthBar;
     [SerializeField] private Color[] _colors;
     [SerializeField] private Canvas _canvas;
+    [SerializeField] private Sprite[] _cursors; //Cursor
+    [SerializeField] private GameObject _cursor; //Cursor
+    [SerializeField] private LayerMask _floorLayer; //Cursor
 
     private enum UI
     {
@@ -38,6 +42,24 @@ public class HUD : MonoBehaviour
         _player.GetComponent<PlayerAttack>().OnOvercharge += Overcharged;
         _player.GetComponent<PlayerHealth>().OnAttackedEvent += Attacked;
         _healthText = _canvas.transform.GetChild((int)UI.Health).GetComponent<TextMeshProUGUI>();
+        Cursor.visible = false; //Cursor
+    }
+
+    private void Update() //All update is cursor.
+    {
+        #region Cursor input
+        if (Input.GetKeyDown(KeyCode.Alpha1)) _cursorIndex = 0;
+        if (Input.GetKeyDown(KeyCode.Alpha2)) _cursorIndex = 1;
+        if (Input.GetKeyDown(KeyCode.Alpha3)) _cursorIndex = 2;
+        if (Input.GetKeyDown(KeyCode.Alpha4)) _cursorIndex = 3;
+        #endregion
+        _cursor.GetComponent<SpriteRenderer>().sprite = _cursors[_cursorIndex];
+        RaycastHit hit;
+        var mousePos = Helpers.Camera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(mousePos, out hit, Mathf.Infinity, _floorLayer))
+        {
+            _cursor.transform.position = hit.point;
+        }
     }
 
     private void Swap()
