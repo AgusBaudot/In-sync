@@ -8,6 +8,7 @@ public class HUD : MonoBehaviour
 {
     //private bool _chip, _overcharged;
     private int _chip;
+    private bool _overcharged;
     private TextMeshProUGUI _healthText;
     [SerializeField] private GameObject _player;
     [SerializeField] private Sprite[] _baseFace;
@@ -34,6 +35,7 @@ public class HUD : MonoBehaviour
         var playerController = _player.GetComponent<PlayerController>();
         playerController.OnSwap += Swap;
         playerController.OnOvercharged += Overcharged;
+        _player.GetComponent<PlayerAttack>().OnOvercharge += Overcharged;
         _player.GetComponent<PlayerHealth>().OnAttackedEvent += Attacked;
         _healthText = _canvas.transform.GetChild((int)UI.Health).GetComponent<TextMeshProUGUI>();
     }
@@ -46,6 +48,7 @@ public class HUD : MonoBehaviour
 
     private void Overcharged(bool state)
     {
+        _overcharged = state;
         _canvas.transform.GetChild((int)UI.ChargedBar).gameObject.SetActive(state); //Enable overcharged bar if player is overcharged. Disable it otherwise.
         _canvas.transform.GetChild((int)UI.Face).GetComponent<Image>().sprite = (state) ? _overchargedFace[_chip] : _baseFace[_chip]; //Set face image to show overcharged face of character used.
     }
@@ -70,6 +73,6 @@ public class HUD : MonoBehaviour
     private IEnumerator Cooldown()
     {
         yield return Helpers.GetWait(0.25f);
-        _canvas.transform.GetChild((int)UI.Face).GetComponent<Image>().sprite = _baseFace[_chip];
+        _canvas.transform.GetChild((int)UI.Face).GetComponent<Image>().sprite = (_overcharged) ? _overchargedFace[_chip] : _baseFace[_chip];
     }
 }

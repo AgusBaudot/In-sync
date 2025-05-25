@@ -23,6 +23,7 @@ public class PlayerHealth : MonoBehaviour, IAttackable
 
     public void OnAttacked(int damageAmount)
     {
+        CinemachineShake.Instance.ShakeCamera(0.5f, 0.2f); //Camera shake.
         _currentHp -= damageAmount;
         OnAttackedEvent?.Invoke();
         if (_currentHp <= 0)

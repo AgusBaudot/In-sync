@@ -34,10 +34,13 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     [Header("Life")]
     [SerializeField] private protected int _hp = 100;
 
+    [Header("Room")]
+    [SerializeField] private int _room;
+
     [Header("Attack")]
     [SerializeField] private protected float _attackCooldown = 1.5f;
     [SerializeField] private protected GameObject _dmgTextPrefab;
-    [SerializeField] private int _damage = 0;
+    [SerializeField] private protected int _damage = 0;
     #endregion
 
     #region Private Fields
@@ -56,7 +59,6 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     {
         _lastAttackTime = -_attackCooldown;
         _rb = GetComponent<Rigidbody>();
-        transform.GetChild(0).GetComponentInChildren<EnemyDamage>().SetDamage(_damage);
     }
 
     private void Update()
@@ -92,9 +94,8 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     #region State Handlers
     public virtual void HandleIdle(float distance)
     {
-        if (distance <= _detectionRange && _roomManager.GetActiveRoom() != -1)
+        if (distance <= _detectionRange && _roomManager.GetActiveRoom() == _room)
         {
-
             _currentState = EnemyState.Following;
             return;
         }
@@ -206,10 +207,10 @@ public abstract class Enemy : MonoBehaviour, IAttackable
 
     private protected void OnDrawGizmos()
     {
-        Gizmos.color = Color.black;
-        Gizmos.DrawWireSphere(transform.position, _detectionRange);
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(transform.position, _attackRange);
+        //Gizmos.color = Color.black;
+        //Gizmos.DrawWireSphere(transform.position, _detectionRange);
+        //Gizmos.color = Color.white;
+        //Gizmos.DrawWireSphere(transform.position, _attackRange);
     }
 }
 

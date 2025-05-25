@@ -42,7 +42,7 @@ public class RoomManager : MonoBehaviour
 
     private void EnteredRoom(Room room)
     {
-        _currentRoom = _rooms.IndexOf(room);
+        _currentRoom = _rooms.IndexOf(room) + 1;
     }
 
     public int GetActiveRoom() => _currentRoom;

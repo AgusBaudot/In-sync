@@ -31,10 +31,20 @@ public class MeleeEnemy : Enemy
         if (Time.time >= _lastAttackTime + _attackCooldown)
         {
             Attack();
+            MeleeAttack();
             _lastAttackTime = Time.time;
         }
         var attackTime = _anim.runtimeAnimatorController.animationClips.FirstOrDefault(clip => clip.name == "Cylinder_attack")?.length ?? 0f;
         StartCoroutine(CooldownAfterAttack(attackTime, distance));
+    }
+
+    private void MeleeAttack()
+    {
+        if (Vector3.Distance(_player.transform.position, transform.position) <= //If distance between player and enemy by the time
+            _attackRange) //the enemy attacks if less than enemy's atk range:
+        {
+            _player.GetComponent<IAttackable>().OnAttacked(_damage);
+        }
     }
 
     public float GetAttackRange() => _attackRange;

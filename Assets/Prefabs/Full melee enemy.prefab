@@ -124,7 +124,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6454351789402728350}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -16.4, y: 0.1, z: 12.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -179,8 +179,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Radius: 1.3
+  m_Center: {x: 0, y: 1.3, z: 0}
 --- !u!114 &513731869234521855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,12 +194,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 0}
-  _detectionRange: 10
-  _attackRange: 2
+  _detectionRange: 50
+  _attackRange: 3.5
+  _roomManager: {fileID: 0}
   _moveSpeed: 6
   _patrolPoints: []
   _anim: {fileID: 5441343486120158187}
   _hp: 100
+  _room: 6
   _attackCooldown: 2
   _dmgTextPrefab: {fileID: 3984084792858373982, guid: 7306bd028462ae74abe801aa27292f97,
     type: 3}

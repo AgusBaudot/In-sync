@@ -35,7 +35,6 @@ public class EnemyBullet : MonoBehaviour
     {
         if (collision.transform.TryGetComponent(out IAttackable attackable)) //Check if other is attackable
         {
-            CinemachineShake.Instance.ShakeCamera(0.35f, 0.15f); //Camera shake.
             attackable.OnAttacked(_damage); //If it is, attack enemy.
         }
         Destroy(gameObject);

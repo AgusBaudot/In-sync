@@ -208,8 +208,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Blink(Action onComplete) //Penny's blink ability
     {
-        //STEP 0: enable overcharge ability and get children
-        _isOvercharged = true;
+        //STEP 0: Get children
         OnOvercharged?.Invoke(_isOvercharged);
         Transform chipModel = transform.GetChild(0);
         Transform pennyModel = transform.GetChild(1);
@@ -246,8 +245,6 @@ public class PlayerController : MonoBehaviour
             timer += Time.deltaTime;
             yield return null; // Wait for frame
         }
-        _isOvercharged = false;
-        OnOvercharged?.Invoke(_isOvercharged);
 
         // STEP 4: Teleport before next frame renders
         _rb.MovePosition(targetPosition);

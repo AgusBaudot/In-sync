@@ -75,29 +75,29 @@ public class RangedEnemy : Enemy
         _rb.velocity = Vector3.zero;
     }
 
-    private new void OnDrawGizmos()
-    {
-        //Gizmos.color = Color.red;
-        //Vector3 forward = transform.forward * 2f;
-        //Quaternion leftRayRotation = Quaternion.AngleAxis(36f, Vector3.up); // ~0.8 dot
-        //Quaternion rightRayRotation = Quaternion.AngleAxis(-36f, Vector3.up);
-        //Gizmos.DrawRay(transform.position, leftRayRotation * forward);
-        //Gizmos.DrawRay(transform.position, rightRayRotation * forward);
+    //private new void OnDrawGizmos()
+    //{
+    //    //Gizmos.color = Color.red;
+    //    //Vector3 forward = transform.forward * 2f;
+    //    //Quaternion leftRayRotation = Quaternion.AngleAxis(36f, Vector3.up); // ~0.8 dot
+    //    //Quaternion rightRayRotation = Quaternion.AngleAxis(-36f, Vector3.up);
+    //    //Gizmos.DrawRay(transform.position, leftRayRotation * forward);
+    //    //Gizmos.DrawRay(transform.position, rightRayRotation * forward);
 
-        float coneAngle = Mathf.Acos(attackFacingThreshold) * Mathf.Rad2Deg;
-        Vector3 forward = transform.forward;
+    //    float coneAngle = Mathf.Acos(attackFacingThreshold) * Mathf.Rad2Deg;
+    //    Vector3 forward = transform.forward;
 
-        // Visualize the forward facing angle as two rays
-        Quaternion leftRayRotation = Quaternion.AngleAxis(-coneAngle, Vector3.up);
-        Quaternion rightRayRotation = Quaternion.AngleAxis(coneAngle, Vector3.up);
+    //    // Visualize the forward facing angle as two rays
+    //    Quaternion leftRayRotation = Quaternion.AngleAxis(-coneAngle, Vector3.up);
+    //    Quaternion rightRayRotation = Quaternion.AngleAxis(coneAngle, Vector3.up);
 
-        Vector3 leftRayDirection = leftRayRotation * forward;
-        Vector3 rightRayDirection = rightRayRotation * forward;
+    //    Vector3 leftRayDirection = leftRayRotation * forward;
+    //    Vector3 rightRayDirection = rightRayRotation * forward;
 
-        float rayLength = 3f;
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, leftRayDirection * rayLength);
-        Gizmos.DrawRay(transform.position, rightRayDirection * rayLength);
-        Gizmos.DrawRay(transform.position, forward * rayLength); // Forward line
-    }
+    //    float rayLength = 3f;
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawRay(transform.position, leftRayDirection * rayLength);
+    //    Gizmos.DrawRay(transform.position, rightRayDirection * rayLength);
+    //    Gizmos.DrawRay(transform.position, forward * rayLength); // Forward line
+    //}
 }

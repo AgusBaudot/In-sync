@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using EZCameraShake;
@@ -7,11 +8,20 @@ public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] private LayerMask _enemyLayer, _floorLayer;
     [SerializeField] private GameObject[] _bulletPool, _overchargedBulletPool;
+    public event Action<bool> OnOvercharge;
 
     #region Overcharged attack
     private bool _overchargedAttack = false;
-    private float _specialAttackDuration = 0.25f;
+    private float _specialAttackDuration = 0.75f;
     private float _specialAttackTimer;
+    #endregion
+
+    #region Attack speed
+    [Header("Attack speed")]
+    private bool _isBuffed;
+    [SerializeField] private float _maxSteps, _stepDuration, _bulletAmount, _maxFireSpeed, _minFireSpeed; //readonly or consts
+    [SerializeField] private float _currentStep, _currentBullets;
+    private float _stepTimer;
     #endregion
 
     #region Components
@@ -22,12 +32,13 @@ public class PlayerAttack : MonoBehaviour
     #region AttackCD
     private bool _canAttackChip, _canAttackPenny;
     private float _currentPennyCD, _currentChipCD;
-    float _pennyAttackCD = 0.35f;
-    float _chipAttackCD = 0.5f;
+    [SerializeField] private float _pennyAttackCD = 0.35f;
+    [SerializeField] private float _chipAttackCD = 0.5f;
     #endregion
 
     private void Start()
     {
+        _minFireSpeed = _pennyAttackCD;
         _canAttackChip = _canAttackPenny = true;
         _playerControllerScript = GetComponent<PlayerController>(); //Assign PlayerController component.
         _chipAnim = transform.GetChild(0).GetComponent<Animator>();
@@ -74,7 +85,23 @@ public class PlayerAttack : MonoBehaviour
             _pennyAnim.SetTrigger("OverchargedAttack");
             OverchargedAttackTimer(); //Tick down timer.
         }
+
+        if (_isBuffed)
+        {
+            _stepTimer += Time.deltaTime;
+            if (_stepTimer >= _stepDuration)
+            {
+                _isBuffed = false;
+                if (_currentStep == 3) OnOvercharge?.Invoke(false);
+                _stepTimer = 0;
+                _currentStep = 0;
+                _currentBullets = 0;
+                _pennyAttackCD = _minFireSpeed;
+            }
+        }
     }
+
+    //Invoke overcharged when it starts and when it ends.
 
     public void Attack(float radious = 3)
     {
@@ -117,7 +144,12 @@ public class PlayerAttack : MonoBehaviour
                 direction = hit.point - transform.position; //Set direction to a vector pointing towards point position.
                 var bullet = NextBullet().GetComponent<PlayerBullet>();
                 bullet.Init((transform.position + Vector3.up), direction.normalized); //Set its velocity to move along vector normalized and tell if attack is overcharged.
+
+                bullet.OnTimeEnds -= DeactivateBullet; //Unsubscribe to avoid duplicates.
+                bullet.OnBulletHit -= BulletHit;
+
                 bullet.OnTimeEnds += DeactivateBullet;
+                bullet.OnBulletHit += BulletHit;
                 OnOverchargedAttackFinish(); //After player shoots, finish overcharged state.
             }
             _canAttackPenny = false;
@@ -130,7 +162,7 @@ public class PlayerAttack : MonoBehaviour
         _overchargedAttack = true; //Set special ability to true.
         _playerControllerScript.SetCanMove(false);
         _specialAttackTimer = _specialAttackDuration; //Set timer to full.
-        Time.timeScale = 0.5f; //Halve game velocity
+        //Time.timeScale = 0.5f; //Halve game velocity
     }
 
     private void OverchargedAttackTimer()
@@ -146,7 +178,6 @@ public class PlayerAttack : MonoBehaviour
     private void OnOverchargedAttackFinish()
     {
         //Reset every value changed.
-        Time.timeScale = 1;
         _overchargedAttack = false; //Set special ability to false.
         _playerControllerScript.SetCanMove(true);
     }
@@ -182,6 +213,23 @@ public class PlayerAttack : MonoBehaviour
     private void DeactivateBullet(GameObject bullet)
     {
         bullet.SetActive(false);
+    }
+
+    private void BulletHit()
+    {
+        _stepTimer = 0;
+        if (_currentStep == _maxSteps) return;
+        _isBuffed = true;
+        _currentBullets++;
+        if (_currentBullets == _bulletAmount)
+        {
+            _currentBullets = 0;
+            _currentStep++;
+            if (_currentStep == 3) OnOvercharge?.Invoke(true);
+        }
+        float fireSpeedRange = _minFireSpeed - _maxFireSpeed;
+        _pennyAttackCD = _minFireSpeed - fireSpeedRange * (_currentStep / _maxSteps);
+        Debug.Log($"Bullet hit: Step: {_currentStep} | Bullets: {_currentBullets} | AtkSpeed: {_pennyAttackCD}");
     }
 
     //View sphere as red in scene

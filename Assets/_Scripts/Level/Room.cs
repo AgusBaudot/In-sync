@@ -11,6 +11,8 @@ public class Room : MonoBehaviour
     [SerializeField] private List<Collider> _doors; //Non-trigger walls for closing the player inside each room.
     [SerializeField] private List<Collider> _roomDetector; //Trigger walls for deteting if the player steps inside a room.
     [SerializeField] private RoomCollider _colliderScript;
+    //When setting doors to true, fire "Open" trigger.
+    //When setting doors to false, fire "Close" trigger.
 
     private bool _hasEntered = false;
 
@@ -28,6 +30,7 @@ public class Room : MonoBehaviour
         }
         foreach (Collider door in _doors)
         {
+            door.transform.GetChild(0).GetComponent<DoorAnimationEvent>().OnAnimationEndEvent += OnAnimationEnd;
             door.gameObject.SetActive(false);
         }
         _colliderScript.OnWallCollision += DisableTriggers;
@@ -44,27 +47,20 @@ public class Room : MonoBehaviour
             OpenDoors();
             return;
         }
-        Debug.Log("Enemy defeated!");
     }
 
     private void OpenDoors()
     {
-        for (int i = 0; i < _doors.Count; i++)
+        foreach (Collider door in _doors)
         {
-            _doors[i].gameObject.SetActive(false);
+            door.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Open");
         }
-        gameObject.SetActive(false);
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.CompareTag("Player"))
-    //    {
-    //        Debug.Log("Entered in same script.");
-    //        DisableTriggers();
-    //        //Call method and destroy all triggers of this room to avoid "re-entering".
-    //    }
-    //}
+    private void OnAnimationEnd()
+    {
+        Destroy(gameObject);
+    }
 
     private void DisableTriggers(Collider other)
     {
@@ -74,12 +70,12 @@ public class Room : MonoBehaviour
         OnRoomEnter?.Invoke(this);
         foreach (Collider trigger in _roomDetector)
         {
-            trigger.gameObject.SetActive(false);
-            //Destroy(trigger.gameObject)?
+            Destroy(trigger.gameObject);
         }
         foreach (Collider door in _doors)
         {
             door.gameObject.SetActive(true);
+            door.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Close");
         }
     }
 

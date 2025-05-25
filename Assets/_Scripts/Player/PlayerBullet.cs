@@ -8,6 +8,7 @@ public class PlayerBullet : MonoBehaviour
 {
     #region Variables
     public event Action<GameObject> OnTimeEnds;
+    public event Action OnBulletHit;
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private LayerMask _floorLayer;
     [SerializeField] private int _damage;
@@ -42,11 +43,13 @@ public class PlayerBullet : MonoBehaviour
         if (collision.transform.TryGetComponent(out IAttackable attackable)) //Check if other is attackable
         {
             CinemachineShake.Instance.ShakeCamera(0.35f, 0.15f); //Camera shake.
+            OnBulletHit?.Invoke();
             attackable.OnAttacked(_damage); //If it is, attack enemy.
         }
         else if (collision.GetComponentInParent<IAttackable>() is IAttackable parentAttackable)
         {
             CinemachineShake.Instance.ShakeCamera(0.35f, 0.15f); //Camera shake.
+            OnBulletHit?.Invoke();
             parentAttackable.OnAttacked(_damage);
         }
         if (gameObject.layer == 3) Default(); //Only default normal bullets with any collision.
