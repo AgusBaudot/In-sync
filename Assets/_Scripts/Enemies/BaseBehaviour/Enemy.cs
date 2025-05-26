@@ -52,6 +52,7 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     #endregion
 
     public event Action<Enemy> OnDeathEvent;
+    public event Action OnAttackedEvent;
 
     #region Unity Methods
 
@@ -163,7 +164,7 @@ public abstract class Enemy : MonoBehaviour, IAttackable
         }
     }
 
-    private protected IEnumerator CooldownAfterAttack(float time, float distance)
+    private virtual protected IEnumerator CooldownAfterAttack(float time, float distance)
     {
         yield return Helpers.GetWait(time);
         if (distance > _attackRange)
@@ -188,6 +189,7 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     public void OnAttacked(int damageReceived)
     {
         _hp -= damageReceived;
+        OnAttackedEvent?.Invoke();
         var dmgTextCanvas = Instantiate(_dmgTextPrefab, transform.position + Vector3.up * 4, Quaternion.Euler(30, 45, 0)); //Instantiate damage text.
         dmgTextCanvas.transform.GetChild(0).GetComponent<DamageUI>().ShowDamage(damageReceived); //Call show damage method with damage received from player.
         if (_hp <= 0) OnDeath();

@@ -53,8 +53,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.2, y: 1.5751841, z: 7.7712126}
-  m_Center: {x: 0.000005773224, y: 1.5, z: -0.13560295}
+  m_Size: {x: 1.2, y: 1.5751839, z: 11.570462}
+  m_Center: {x: 0.0000037059526, y: 1.5, z: -2.035231}
 --- !u!54 &1012882996608092446
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -313,7 +313,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8314200614478718524}
-  - component: {fileID: 5562274180981503079}
   m_Layer: 10
   m_Name: Punching bag
   m_TagString: Untagged
@@ -339,24 +338,3 @@ Transform:
   - {fileID: 3739196690855904004}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
---- !u!65 &5562274180981503079
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5373311460729468249}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.1, y: 3.9296875, z: 0.7627257}
-  m_Center: {x: 0, y: 0, z: 0}

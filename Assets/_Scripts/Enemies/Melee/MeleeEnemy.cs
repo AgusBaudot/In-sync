@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -26,7 +27,8 @@ public class MeleeEnemy : Enemy
 
     public override void HandleAttacking(float distance)
     {
-        _rb.velocity = Vector3.zero;
+        if (!_rb.isKinematic)
+            _rb.velocity = Vector3.zero;
 
         if (Time.time >= _lastAttackTime + _attackCooldown)
         {
@@ -38,10 +40,18 @@ public class MeleeEnemy : Enemy
         StartCoroutine(CooldownAfterAttack(attackTime, distance));
     }
 
+    private protected override IEnumerator CooldownAfterAttack(float time, float distance)
+    {
+        _rb.isKinematic = true;
+        yield return Helpers.GetWait(time);
+        _rb.isKinematic = false;
+        _currentState = EnemyState.Following;
+    }
+
     private void MeleeAttack()
     {
         if (Vector3.Distance(_player.transform.position, transform.position) <= //If distance between player and enemy by the time
-            _attackRange) //the enemy attacks if less than enemy's atk range:
+            _attackRange + 0.5f) //the enemy attacks if less than enemy's atk range:
         {
             _player.GetComponent<IAttackable>().OnAttacked(_damage);
         }

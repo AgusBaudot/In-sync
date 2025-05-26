@@ -98,12 +98,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _player: {fileID: 0}
   _detectionRange: 40
-  _attackRange: 25
+  _attackRange: 30
   _roomManager: {fileID: 0}
   _moveSpeed: 2
   _patrolPoints: []
   _anim: {fileID: 220790880439721474}
   _hp: 75
+  _room: 6
   _attackCooldown: 4
   _dmgTextPrefab: {fileID: 3984084792858373982, guid: 7306bd028462ae74abe801aa27292f97,
     type: 3}
@@ -264,7 +265,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 697982191774494980, guid: 099af1678af97d34cb2c69530119b700,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9132359800651508070}
   m_SourcePrefab: {fileID: 100100000, guid: 099af1678af97d34cb2c69530119b700, type: 3}
 --- !u!95 &220790880439721474 stripped
 Animator:
@@ -278,3 +283,23 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7113197453662660179}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7717090032561084247 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 697982191774494980, guid: 099af1678af97d34cb2c69530119b700,
+    type: 3}
+  m_PrefabInstance: {fileID: 7113197453662660179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9132359800651508070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7717090032561084247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f2268d31e7fb5949a206d37c64b2208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _whiteMat: {fileID: 2100000, guid: 2c1a07cadc81dec4a817076648b0fd0a, type: 2}
+  _blackMat: {fileID: 2100000, guid: 3848291e04cd3c74d8f792eedb661d89, type: 2}

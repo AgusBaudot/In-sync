@@ -80,6 +80,11 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
+        if (_playerControllerScript.IsUsingChip())
+        {
+            ResetAttackSpeed();
+        }
+
         if (_overchargedAttack) //If player can do an overcharged attack:
         {
             _pennyAnim.SetTrigger("OverchargedAttack");
@@ -91,20 +96,24 @@ public class PlayerAttack : MonoBehaviour
             _stepTimer += Time.deltaTime;
             if (_stepTimer >= _stepDuration)
             {
-                _isBuffed = false;
-                if (_currentStep == 3) OnOvercharge?.Invoke(false);
-                _stepTimer = 0;
-                _currentStep = 0;
-                _currentBullets = 0;
-                _pennyAttackCD = _minFireSpeed;
+                ResetAttackSpeed();
             }
         }
     }
 
-    //Invoke overcharged when it starts and when it ends.
+    private void ResetAttackSpeed()
+    {
+        _isBuffed = false;
+        if (_currentStep == 3) OnOvercharge?.Invoke(false);
+        _stepTimer = 0;
+        _currentStep = 0;
+        _currentBullets = 0;
+        _pennyAttackCD = _minFireSpeed;
+    }
 
     public void Attack(float radious = 3)
     {
+        if (radious == 5) Debug.Log("Overcharge done with chip");
         if (_playerControllerScript.IsUsingChip()) //If player is using Chip:
         {
             _chipAnim.SetTrigger("Attacking");

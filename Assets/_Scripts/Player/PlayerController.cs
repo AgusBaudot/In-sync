@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
 
     public event Action OnSwap;
     public event Action<bool> OnOvercharged;
+    private Action _pendingOverchargeAction;
 
     private void Start()
     {
@@ -229,7 +230,8 @@ public class PlayerController : MonoBehaviour
 
         if (!Physics.Raycast(targetPosition + Vector3.up, Vector3.down, out RaycastHit floorHit, Mathf.Infinity, _walkableLayer))
         {
-            targetPosition = transform.position; //If destined position isn't walkable, then stay in place.
+            Physics.Raycast(transform.position, direction, out RaycastHit wallHit, _blinkDistance, _wallLayer);
+            targetPosition = wallHit.point - direction * 0.5f; //If destined position isn't walkable, stop right before wall.
         }
         else if (Physics.Raycast(transform.position, direction, out RaycastHit wallHit, _blinkDistance, _wallLayer))
         {
@@ -261,6 +263,19 @@ public class PlayerController : MonoBehaviour
         chipModel.gameObject.SetActive(_chip);
         pennyModel.gameObject.SetActive(!_chip);
         _isBlinking = false;
+        if (!_chip)
+        {
+            for (int i = 0; i < pennyModel.childCount; i++)
+            {
+                pennyModel.GetChild(i).TryGetComponent(out FlashWhiteAndBlack materialScript);
+                if (materialScript != null) materialScript.ResetMaterials();
+            }
+        }
+        if (_pendingOverchargeAction != null)
+        {
+            _pendingOverchargeAction.Invoke();
+            _pendingOverchargeAction = null;
+        }
     }
 
     private void CharacterSwap()
@@ -276,11 +291,20 @@ public class PlayerController : MonoBehaviour
         _speed = _normalSpeed; //Make maybe slow down instead of sudden in future.
         if (_isOvercharged) //If player was overcharged when doing swap:
         {
-            if (_chip) //If overcharge is with chip:
+            if (_chip) //If Penny was overcharged before swap:
             {
-                _playerAttackScript.Attack(5);
+                if (_isBlinking)
+                {
+                    _pendingOverchargeAction = () => _playerAttackScript.Attack(5);
+                }
+                else
+                {
+                    _playerAttackScript.Attack(5);
+                }
+                //if (_isBlinking) Debug.Log("Overcharge done with penny while blinking");
+                //_playerAttackScript.Attack(5);
             }
-            else //If overcharge is with penny:
+            else //If Chip was overcharged before swap:
             {
                 _playerAttackScript.SpecialAttack(); //Call her special attack.
             }
@@ -314,3 +338,5 @@ public class PlayerController : MonoBehaviour
         Destroy(particle.gameObject, 0.5f);
     }
 }
+//Player is overcharged. Overcharged = true;
+//Player blinks, so if (isBlinking && isOvercharged) then when overcharge finishes execute overcharge attack.

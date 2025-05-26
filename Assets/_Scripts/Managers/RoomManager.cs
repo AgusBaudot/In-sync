@@ -5,6 +5,7 @@ using UnityEngine;
 public class RoomManager : MonoBehaviour
 {
     [SerializeField] private List<Room> _rooms = new List<Room>();
+    [SerializeField] private GameObject _cursor;
     [SerializeField] private Canvas _canvas;
     private int _counter = 0;
     private int _currentRoom = -1;
@@ -25,6 +26,7 @@ public class RoomManager : MonoBehaviour
         if (_counter == _rooms.Count)
         {
             Cursor.visible = true;
+            _cursor.SetActive(false);
             _canvas.transform.GetChild(0).gameObject.SetActive(true);
         }
     }

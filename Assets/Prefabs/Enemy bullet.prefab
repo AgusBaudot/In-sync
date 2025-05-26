@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rb: {fileID: -5698965207721040110}
-  _speed: 15
+  _speed: 45
   _damage: 15
 --- !u!65 &-4940501139218982023
 BoxCollider:
