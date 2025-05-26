@@ -17,6 +17,7 @@ public class PlayerHealth : MonoBehaviour, IAttackable
 
     public void OnDeath()
     {
+        Cursor.visible = true;
         _canvas.transform.GetChild(1).gameObject.SetActive(true);
         Destroy(gameObject);
     }
@@ -28,6 +29,7 @@ public class PlayerHealth : MonoBehaviour, IAttackable
         OnAttackedEvent?.Invoke();
         if (_currentHp <= 0)
         {
+            _currentHp = 0;
             OnDeath();
         }
     }

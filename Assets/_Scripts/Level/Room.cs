@@ -42,7 +42,6 @@ public class Room : MonoBehaviour
 
         if (_enemies.Count == 0)
         {
-            Debug.Log("Room Cleared!");
             OnRoomCleared?.Invoke();
             OpenDoors();
             return;

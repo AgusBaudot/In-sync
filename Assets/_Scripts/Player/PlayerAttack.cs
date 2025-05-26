@@ -229,7 +229,6 @@ public class PlayerAttack : MonoBehaviour
         }
         float fireSpeedRange = _minFireSpeed - _maxFireSpeed;
         _pennyAttackCD = _minFireSpeed - fireSpeedRange * (_currentStep / _maxSteps);
-        Debug.Log($"Bullet hit: Step: {_currentStep} | Bullets: {_currentBullets} | AtkSpeed: {_pennyAttackCD}");
     }
 
     //View sphere as red in scene

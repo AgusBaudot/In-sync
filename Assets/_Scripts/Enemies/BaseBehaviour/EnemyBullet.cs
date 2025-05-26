@@ -42,6 +42,6 @@ public class EnemyBullet : MonoBehaviour
 
     private void OnDestroy()
     {
-        //Debug.Log("Destroyed bullet");
+        
     }
 }

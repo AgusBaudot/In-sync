@@ -27,13 +27,14 @@ public class PlayerController : MonoBehaviour
     #region Blink
     [Header("Blink")]
     [SerializeField]
-    private float _blinkCD;
+    private float _blinkCD = 1.5f;
     [Range(1f, 10f)]
     [SerializeField]
     private int _blinkDistance = 7;
     private float _currentBlinkCD = 2;
     private bool _canBlink = true;
     private float _blinkTime = 0.25f;
+    private bool _isBlinking = false;
     [SerializeField] private ParticleSystem _blinkParticlesEffect;
     #endregion
 
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
         _pennyAnim = transform.GetChild(1).GetComponent<Animator>();
         _chipAnim.applyRootMotion = false;
         _pennyAnim.applyRootMotion = false;
+        _playerAttackScript.OnOvercharge += _playerAttackScript_OnOvercharge;
     }
 
     private void Update()
@@ -91,11 +93,8 @@ public class PlayerController : MonoBehaviour
             {
                 _canBlink = false; //He can't blink anymore.
                 ParticleInstantiation();
-                StartCoroutine(Blink(() =>
-                {
-                    if (_chip)
-                        _playerAttackScript.Attack(5);
-                }));
+                _isBlinking = true;
+                StartCoroutine(Blink());
             }
         }
 
@@ -211,10 +210,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator Blink(Action onComplete) //Penny's blink ability
+    private IEnumerator Blink() //Penny's blink ability
     {
         //STEP 0: Get children
-        OnOvercharged?.Invoke(_isOvercharged);
         Transform chipModel = transform.GetChild(0);
         Transform pennyModel = transform.GetChild(1);
         GameObject activeModel = _chip ? chipModel.gameObject : pennyModel.gameObject;
@@ -235,7 +233,6 @@ public class PlayerController : MonoBehaviour
         }
         else if (Physics.Raycast(transform.position, direction, out RaycastHit wallHit, _blinkDistance, _wallLayer))
         {
-            Debug.Log("Cannot blink through enemies");
             targetPosition = wallHit.point - direction * 0.5f; //If in the middle of the blink is a wall, don't blink through it.
         }
         else if (Physics.Raycast(transform.position, direction, out RaycastHit roomHit, _blinkDistance, _roomLayer))
@@ -263,24 +260,25 @@ public class PlayerController : MonoBehaviour
         yield return null;
         chipModel.gameObject.SetActive(_chip);
         pennyModel.gameObject.SetActive(!_chip);
-
-        onComplete?.Invoke();
+        _isBlinking = false;
     }
 
     private void CharacterSwap()
     {
         ParticleInstantiation();
         OnSwap?.Invoke();
-        transform.GetChild(0).gameObject.SetActive(_chip); //Enable chip when using it, disable it otherwise.
-        transform.GetChild(1).gameObject.SetActive(!_chip); //Enable penny when using it, disable it otherwise.
+        if (!_isBlinking)
+        {
+            transform.GetChild(0).gameObject.SetActive(_chip); //Enable chip when using it, disable it otherwise.
+            transform.GetChild(1).gameObject.SetActive(!_chip); //Enable penny when using it, disable it otherwise.
+        }
         _currentSprintCD = 0; //Set sprint timer to 0 to stop sprinting.
         _speed = _normalSpeed; //Make maybe slow down instead of sudden in future.
         if (_isOvercharged) //If player was overcharged when doing swap:
         {
             if (_chip) //If overcharge is with chip:
             {
-                transform.GetChild(0).gameObject.SetActive(false); //Deactivate GO so it doesn't appear mid-blink.
-                //_playerAttackScript.Attack(5); Should be here. Figure out a way to execute after blink is finished. (Blinked is IEnumerator).
+                _playerAttackScript.Attack(5);
             }
             else //If overcharge is with penny:
             {
@@ -289,6 +287,8 @@ public class PlayerController : MonoBehaviour
         }
         _canSwap = false;
         _currentSwapCD = _swapCD;
+        _isOvercharged = false;
+        OnOvercharged?.Invoke(_isOvercharged);
     }
 
     public bool IsUsingChip() => _chip;
@@ -298,6 +298,11 @@ public class PlayerController : MonoBehaviour
     public void SetCanMove(bool canMove)
     {
         _canMove = canMove;
+    }
+
+    private void _playerAttackScript_OnOvercharge(bool state)
+    {
+        _isOvercharged = state;
     }
 
     private void ParticleInstantiation()

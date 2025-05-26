@@ -18,24 +18,13 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    for (int i = 0; i < _rooms.Count; i++)
-        //    {
-        //        _rooms[i].gameObject.SetActive(true);
-        //        _doors[i].gameObject.SetActive(false);
-        //    }
-        //}
-    }
-
     private void RoomCleared()
     {
         _counter++;
         _currentRoom = -1;
         if (_counter == _rooms.Count)
         {
+            Cursor.visible = true;
             _canvas.transform.GetChild(0).gameObject.SetActive(true);
         }
     }

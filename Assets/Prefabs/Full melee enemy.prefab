@@ -195,17 +195,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _player: {fileID: 0}
   _detectionRange: 50
-  _attackRange: 3.5
+  _attackRange: 3
   _roomManager: {fileID: 0}
-  _moveSpeed: 6
+  _moveSpeed: 10
   _patrolPoints: []
   _anim: {fileID: 5441343486120158187}
-  _hp: 100
+  _hp: 50
   _room: 6
   _attackCooldown: 2
   _dmgTextPrefab: {fileID: 3984084792858373982, guid: 7306bd028462ae74abe801aa27292f97,
     type: 3}
-  _damage: 10
+  _damage: 5
 --- !u!1 &8381513499168615820
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +331,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Melee enemy
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2621944041388765997, guid: 8eedd4450046dcf49be0579e347fe7f1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
