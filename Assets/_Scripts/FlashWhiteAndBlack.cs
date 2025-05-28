@@ -10,6 +10,7 @@ public class FlashWhiteAndBlack : MonoBehaviour
     [SerializeField] private Material _whiteMat, _blackMat;
     private Material _normalMaterial;
     private Renderer _renderer;
+    private Coroutine _flashCoroutine;
 
     private void Start()
     {
@@ -28,7 +29,11 @@ public class FlashWhiteAndBlack : MonoBehaviour
     private void StartFlash()
     {
         if (_renderer.gameObject.transform.parent.gameObject.activeSelf) //Check if parent gameobject is active.
-            StartCoroutine(FlashCooldown());
+        {
+            if (_flashCoroutine != null)
+                StopCoroutine(_flashCoroutine);
+            _flashCoroutine = StartCoroutine(FlashCooldown());
+        }
     }
 
     private IEnumerator FlashCooldown()
@@ -42,6 +47,17 @@ public class FlashWhiteAndBlack : MonoBehaviour
 
     public void ResetMaterials()
     {
+        if (_flashCoroutine != null)
+        {
+            StopCoroutine(_flashCoroutine);
+            _flashCoroutine = null;
+        }
+
         _renderer.material = _normalMaterial;
+    }
+
+    private void OnDisable()
+    {
+        ResetMaterials();
     }
 }

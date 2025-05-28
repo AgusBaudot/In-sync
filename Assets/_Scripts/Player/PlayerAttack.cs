@@ -10,6 +10,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject[] _bulletPool, _overchargedBulletPool;
     public event Action<bool> OnOvercharge;
 
+    private bool _chip = true;
+
     #region Overcharged attack
     private bool _overchargedAttack = false;
     private float _specialAttackDuration = 0.75f;
@@ -47,13 +49,14 @@ public class PlayerAttack : MonoBehaviour
         {
             bullet.SetActive(false);
         }
+        _playerControllerScript.OnSwap += Swap;
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0)) //If player presses LMB:
         {
-            if ((_playerControllerScript.IsUsingChip() && _canAttackChip) || (!_playerControllerScript.IsUsingChip() && _canAttackPenny))
+            if ((_chip && _canAttackChip) || (!_chip && _canAttackPenny))
                 Attack(); //Call attack.
         }
 
@@ -66,7 +69,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        else if (!_canAttackPenny)
+        else if (!_canAttackPenny && !_chip)
         {
             _currentPennyCD -= Time.deltaTime;
             if (_currentPennyCD <= 0)
@@ -80,7 +83,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        if (_playerControllerScript.IsUsingChip())
+        if (_chip)
         {
             ResetAttackSpeed();
         }
@@ -113,8 +116,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void Attack(float radious = 3)
     {
-        if (radious == 5) Debug.Log("Overcharge done with chip");
-        if (_playerControllerScript.IsUsingChip()) //If player is using Chip:
+        if (_chip) //If player is using Chip:
         {
             _chipAnim.SetTrigger("Attacking");
             Collider[] collisions = Physics.OverlapSphere(transform.position, radious, _enemyLayer); //Get all colliders with enemy layer in radious.
@@ -133,8 +135,8 @@ public class PlayerAttack : MonoBehaviour
                 {
                     foreach (var collided in collisions)
                     {
+                        collided.gameObject.GetComponentInParent<Enemy>().Stun(2);
                         collided.gameObject.GetComponentInParent<IAttackable>().OnAttacked(15); //Receive special damage.
-                        //Stun them.
                     }
                 }
             }
@@ -239,6 +241,8 @@ public class PlayerAttack : MonoBehaviour
         float fireSpeedRange = _minFireSpeed - _maxFireSpeed;
         _pennyAttackCD = _minFireSpeed - fireSpeedRange * (_currentStep / _maxSteps);
     }
+
+    private void Swap() => _chip = !_chip; //Invert chip value when swapping characters.
 
     //View sphere as red in scene
     //private void OnDrawGizmosSelected()

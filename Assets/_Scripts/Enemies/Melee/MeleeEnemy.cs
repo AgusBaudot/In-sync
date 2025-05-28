@@ -40,6 +40,26 @@ public class MeleeEnemy : Enemy
         StartCoroutine(CooldownAfterAttack(attackTime, distance));
     }
 
+    public override void HandleStunned(float distance)
+    {
+        if (!_isStunned)
+        {
+            if (distance <= _attackRange)
+            {
+                _currentState = EnemyState.Attacking;
+                if (!isKnockback)
+                    _rb.velocity = Vector3.zero;
+                return;
+            }
+
+            else
+            {
+                _currentState = EnemyState.Following;
+                return;
+            }
+        }
+    }
+
     private protected override IEnumerator CooldownAfterAttack(float time, float distance)
     {
         _rb.isKinematic = true;
@@ -56,6 +76,7 @@ public class MeleeEnemy : Enemy
             _player.GetComponent<IAttackable>().OnAttacked(_damage);
         }
     }
+
 
     public float GetAttackRange() => _attackRange;
 }

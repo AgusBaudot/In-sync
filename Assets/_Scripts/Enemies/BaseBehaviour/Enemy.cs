@@ -7,7 +7,8 @@ public enum EnemyState
 {
     Idle,
     Following,
-    Attacking
+    Attacking,
+    Stunned
 }
 
 [RequireComponent(typeof(Rigidbody))]
@@ -49,6 +50,7 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     private protected int _currentPatrolIndex = 0;
     private protected Rigidbody _rb;
     private protected bool isKnockback = false;
+    private protected bool _isStunned = false;
     #endregion
 
     public event Action<Enemy> OnDeathEvent;
@@ -65,7 +67,7 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     private void Update()
     {
         if (_player == null) return;
-
+        if (_isStunned) _currentState = EnemyState.Stunned;
         float distanceToPlayer = Vector3.Distance(_rb.position, _player.position);
         switch (_currentState)
         {
@@ -79,6 +81,9 @@ public abstract class Enemy : MonoBehaviour, IAttackable
 
             case EnemyState.Attacking:
                 HandleAttacking(distanceToPlayer);
+                break;
+            case EnemyState.Stunned:
+                HandleStunned(distanceToPlayer);
                 break;
         }
         _anim.SetBool("isMoving", _rb.velocity.magnitude > 0.1f);
@@ -138,6 +143,34 @@ public abstract class Enemy : MonoBehaviour, IAttackable
         if (!isKnockback)
             _rb.velocity = Vector3.zero; //Only set velocity to 0. Rest of attack logic is independent.
     }
+
+    public virtual void HandleStunned(float distance)
+    {
+        if (!_isStunned)
+        {
+            if (distance > _detectionRange)
+            {
+                _currentState = EnemyState.Idle;
+                if (!isKnockback)
+                    _rb.velocity = Vector3.zero;
+                return;
+            }
+
+            else if (distance <= _attackRange)
+            {
+                _currentState = EnemyState.Attacking;
+                if (!isKnockback)
+                    _rb.velocity = Vector3.zero;
+                return;
+            }
+
+            else if (distance <= _detectionRange /*&& _roomManager.GetActiveRoom() == _room*/)
+            {
+                _currentState = EnemyState.Following;
+                return;
+            }
+        }
+    }
     #endregion
 
     #region Helper Methods
@@ -178,6 +211,21 @@ public abstract class Enemy : MonoBehaviour, IAttackable
     }
 
     public EnemyState GetEnemyState() => _currentState;
+
+    public void Stun(float stunTime = 2f)
+    {
+        _isStunned = true;
+        _currentState = EnemyState.Stunned;
+        StartCoroutine(StunCooldown(stunTime));
+    }
+
+    private IEnumerator StunCooldown(float stunTime)
+    {
+        Debug.Log("Stun Started");
+        yield return Helpers.GetWait(stunTime);
+        _isStunned = false;
+        Debug.Log("Stun finished");
+    }
     #endregion
 
     #region Attack
